@@ -1,3 +1,12 @@
+subprojects {
+    afterEvaluate {
+        if (it.name == "flutter_inappwebview_android") {
+            it.android.buildTypes.release.minifyEnabled = false
+        }
+    }
+}
+
+
 buildscript {
     ext.kotlin_version = '1.9.0'
     repositories {
