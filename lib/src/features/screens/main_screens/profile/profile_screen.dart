@@ -187,7 +187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Iyong Progresso',
+            'Iyong Pag-unlad',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

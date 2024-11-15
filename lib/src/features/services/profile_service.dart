@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:taga_cuyo/src/exceptions/logger.dart';
 
 class ProfileService {
   // Stream to get current user data
@@ -40,7 +41,7 @@ class ProfileService {
       }
     } catch (e) {
       // Handle errors (e.g., network issues, permissions)
-      print('Error updating profile: $e');
+      Logger.log('Error updating profile: $e');
       throw Exception('Failed to update profile: $e');
     }
   }

@@ -96,6 +96,8 @@ Future<String> signUpUser({
       'profile_image': profileImage ?? '', // Default to empty string if null
       'mother_tongue': motherTounge ?? '',
       'hasCompletedSurvey': false, // Always set to false
+      'status': 'offline',  // Adding status field
+      'lastSeen': FieldValue.serverTimestamp(), 
     });
 
     // Add progress details to 'user_progress' collection with default values

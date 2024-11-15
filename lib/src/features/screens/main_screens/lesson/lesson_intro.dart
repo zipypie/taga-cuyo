@@ -7,10 +7,10 @@ class LessonIntroduction extends StatefulWidget {
   const LessonIntroduction({super.key});
 
   @override
-  _LessonIntroductionState createState() => _LessonIntroductionState();
+  LessonIntroductionState createState() => LessonIntroductionState();
 }
 
-class _LessonIntroductionState extends State<LessonIntroduction> {
+class LessonIntroductionState extends State<LessonIntroduction> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 

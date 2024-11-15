@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:taga_cuyo/src/features/common_widgets/button.dart';
 import 'package:taga_cuyo/src/features/constants/colors.dart';
 import 'package:taga_cuyo/src/features/services/profile_service.dart';
+import 'package:taga_cuyo/src/features/common_widgets/custom_alert_dialog.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -294,13 +295,21 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
     );
 
     // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profile updated successfully')),
-    );
+
+  await showCustomAlertDialog(
+    context,
+    'Matagumpay', // Dialog title
+    'Ang iyong profile ay na update na!', // Dialog content
+    buttonText: 'OK', // Button text
+  );
+
   } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Update failed: $e')),
-    );
+  await showCustomAlertDialog(
+    context,
+    'Hindi na-update', // Dialog title
+    'Uliting muli ang pag-upload!', // Dialog content
+    buttonText: 'OK', // Button text
+  );
   }
 }
 
