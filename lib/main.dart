@@ -13,6 +13,7 @@ import 'package:taga_cuyo/src/features/services/streak_count.dart';
 import 'package:taga_cuyo/src/features/services/user_service.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/profile/profile_bloc.dart';
 import 'package:taga_cuyo/src/features/services/user_session_manager.dart';
+import 'package:taga_cuyo/src/exceptions/logger.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +45,7 @@ Future<void> main() async {
       appleProvider: AppleProvider.appAttest,
     );
   } catch (e) {
-    print('Error initializing Firebase or Hive: $e');
+    Logger.log('Error initializing Firebase or Hive: $e');
   }
 
   runApp(const MyApp());
@@ -84,22 +85,22 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   void setStatus(String status) async {
     if (authService.currentUser == null) {
-      print("No current user found");
+      Logger.log("No current user found");
     } else {
-      print("Current user UID: ${authService.currentUser!.uid}");
+      Logger.log("Current user UID: ${authService.currentUser!.uid}");
     }
 
     await _firestore.collection('users').doc(authService.currentUser!.uid).set({
       "status": status,
     }, SetOptions(merge: true)); // This ensures other fields aren't overwritten
 
-    print("Status updated to $status");
+    Logger.log("Status updated to $status");
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    print("App lifecycle state changed: $state");
+    Logger.log("App lifecycle state changed: $state");
 
     if (state == AppLifecycleState.resumed) {
       setStatus("Online");
@@ -112,16 +113,16 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
     String? uid = authService.getUserId(); // Get the user's UID
 
     if (uid != null) {
-      print("Current User UID: $uid"); // Debug print
+      Logger.log("Current User UID: $uid"); // Debug Logger.log
 
       final userData = await authService.getUserData();
 
       // Debugging information
       if (userData == null) {
-        print("User data is null");
+        Logger.log("User data is null");
         return; // Exit early if userData is null
       } else {
-        print("User data retrieved: ${userData.data()}");
+        Logger.log("User data retrieved: ${userData.data()}");
       }
 
       // Check if the user has completed the survey
@@ -146,14 +147,14 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
               },
             );
             _dialogShown = true; // Ensure the dialog is only shown once
-            print("Showing SurveyDialog for UID: $uid"); // Debug print
+            Logger.log("Showing SurveyDialog for UID: $uid"); // Debug Logger.log
           });
         }
       } else {
-        print("Survey already completed.");
+        Logger.log("Survey already completed.");
       }
     } else {
-      print("No user is logged in."); // Handle case where no user is logged in
+      Logger.log("No user is logged in."); // Handle case where no user is logged in
     }
   }
 
