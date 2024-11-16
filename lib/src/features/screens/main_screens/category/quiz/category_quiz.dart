@@ -193,18 +193,6 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
   }
 
   void _showCongratulationsDialog(String subcategoryTitle) async {
-    await showCustomAlertDialog(
-      context,
-      'Binabati Kita!', // Title for the dialog
-      'Natapos mo na ang lahat ng pagsubok sa $subcategoryTitle', // Content for the dialog
-      buttonText: 'OK', // Button text
-    );
-
-    await _categoryService.updateUserProgress(
-      userId: widget.userId,
-      categoryId: widget.categoryId,
-      subcategoryId: widget.subcategoryId,
-    );
     // Check if the subcategory is finished
     bool isFinished = await _categoryService.isSubcategoryFinished(
       userId: widget.userId,
@@ -221,15 +209,17 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
       );
     }
 
-    // Update user progress again after showing the dialog
-    await _categoryService.updateUserProgress(
-      userId: widget.userId,
-      categoryId: widget.categoryId,
-      subcategoryId: widget.subcategoryId,
-    );
 
-    // Optionally navigate back to the first screen if needed
-    Navigator.of(context).popUntil((route) => route.isFirst);
+    await showCustomAlertDialog(
+      context,
+      'Binabati Kita!', // Title for the dialog
+      'Natapos mo na ang lahat ng pagsubok sa $subcategoryTitle', // Content for the dialog
+      buttonText: 'OK', // Button text
+    ).then((_) {
+      Navigator.pop(context); // Close the dialog
+      Navigator.pushReplacementNamed(
+          context, 'CategoryScreen'); // Navigate to LessonScreenPage
+    });
   }
 
   void handleAnswer(String selectedAnswer) {

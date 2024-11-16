@@ -76,8 +76,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } else {
       await showCustomAlertDialog(
         context,
-        'Error',
-        res,
+        'Hindi available ang email',
+        'Pumili ng ibang email account',
       );
     }
   }
