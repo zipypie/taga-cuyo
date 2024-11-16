@@ -49,6 +49,7 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
     fetchCategorySubcategoryData();
   }
 
+
   @override
   Widget build(BuildContext context) {
     if (dataList.isEmpty) {
@@ -56,9 +57,7 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
     }
 
     if (_currentWordIndex >= dataList.length) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showCongratulationsDialog(widget.subcategoryTitle);
-      });
+      _showCongratulationsDialog(widget.subcategoryTitle);
       return const Center(child: Text('Natapos na ang pagsubok'));
     }
 
@@ -74,6 +73,15 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
     // Calculate the progress as a fraction of total quizzes
     double progress = (_currentWordIndex + 1) / dataList.length;
 
+    // Fetch the image if it's not already fetched
+    if (cachedImageUrl == null) {
+      fetchImageFromStorage(data['image_path']).then((url) {
+        setState(() {
+          cachedImageUrl = url;
+        });
+      });
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -85,22 +93,11 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
                 _headerTitle(
                     context, widget.categoryId, widget.subcategoryTitle),
                 const SizedBox(height: 20),
-                FutureBuilder<String>(
-                  future: cachedImageUrl != null
-                      ? Future.value(cachedImageUrl)
-                      : fetchImageFromStorage(data['image_path']),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return const Center(child: Text('Walang imahe'));
-                    } else {
-                      cachedImageUrl = snapshot.data;
-                      return _imageWithWordContainer(
-                          context, cachedImageUrl, data['word']);
-                    }
-                  },
-                ),
+                // Directly show the image if it exists
+                cachedImageUrl == null
+                    ? const Center(child: CircularProgressIndicator())
+                    : _imageWithWordContainer(
+                        context, cachedImageUrl, data['word']),
                 const SizedBox(height: 20),
                 _notifText(),
                 const SizedBox(height: 20),
@@ -109,7 +106,7 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
                   const Padding(
                     padding: EdgeInsets.only(top: 20),
                     child: Text(
-                      'Ulitin muli',
+                      'Pumiling muli',
                       style: TextStyle(color: Colors.red, fontSize: 18),
                     ),
                   ),
@@ -121,14 +118,7 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
                             10), // Add padding between button and progress bar
                     child: MyButton(
                       onTab: () {
-                        setState(() {
-                          _currentWordIndex++;
-                          _isAnswered = false;
-                          selectedOption = null;
-                          cachedImageUrl = null; // Reset image cache
-                          options =
-                              []; // Reset options to reshuffle for new word
-                        });
+                        navigateToNextWord();
                       },
                       text: 'Sunod',
                     ),
@@ -209,7 +199,6 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
       );
     }
 
-
     await showCustomAlertDialog(
       context,
       'Binabati Kita!', // Title for the dialog
@@ -223,15 +212,30 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
   }
 
   void handleAnswer(String selectedAnswer) {
+    if (_isAnswered && _isCorrect) return; // Don't update if already correct
+
     setState(() {
       selectedOption = selectedAnswer;
       _isAnswered = true;
       _isCorrect = selectedAnswer == correctAnswer;
     });
 
+    // Check if the answer is correct and if we're at the last word
     if (_isCorrect && _currentWordIndex + 1 >= dataList.length) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _showCongratulationsDialog(widget.subcategoryTitle);
+      });
+    }
+  }
+
+  void navigateToNextWord() {
+    if (_currentWordIndex + 1 < dataList.length) {
+      setState(() {
+        _currentWordIndex++;
+        _isAnswered = false;
+        selectedOption = null;
+        cachedImageUrl = null;
+        options = [];
       });
     }
   }
@@ -274,7 +278,7 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: GestureDetector(
         onTap: () {
-          handleAnswer(option);
+          handleAnswer(option); // Handle answer selection
         },
         child: Container(
           width: MediaQuery.of(context).size.width * 3 / 4,
