@@ -6,6 +6,7 @@ import 'package:taga_cuyo/src/features/constants/colors.dart';
 import 'package:taga_cuyo/src/features/constants/fontstyles.dart';
 import 'package:taga_cuyo/src/features/constants/logo.dart';
 import 'package:taga_cuyo/src/features/screens/onboarding_screens/login/login.dart';
+import 'package:taga_cuyo/src/features/screens/onboarding_screens/signup/tac.dart';
 import 'package:taga_cuyo/src/features/services/authentication.dart';
 import 'package:taga_cuyo/src/features/common_widgets/custom_alert_dialog.dart'; // Import your custom alert dialog
 
@@ -24,6 +25,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController ageController = TextEditingController();
   String? selectedGender;
   bool isLoading = false;
+  bool isChecked = false;
+
+  void showTermsAndConditionsDialog() async {
+    // Show the Terms and Conditions dialog
+    bool? agreed = await showDialog<bool>(
+      context: context,
+      builder: (context) => TermsAndConditionsDialog(),
+    );
+
+    // If the user agrees, check the checkbox
+    if (agreed == true) {
+      setState(() {
+        isChecked = true;
+      });
+    }
+  }
 
   void signUpUser() async {
     // Ensure all fields are filled
@@ -35,8 +52,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
         selectedGender == null) {
       await showCustomAlertDialog(
         context,
-        'Error',
+        'Dapat gawin',
         'Pakipunan ang lahat ng form',
+      );
+      return;
+    }
+
+    if (passwordController.text.length < 6) {
+      await showCustomAlertDialog(
+        context,
+        'Error',
+        'Ang password ay dapat may 6 o higit pang characters.',
+      );
+      return;
+    }
+
+    if (!isChecked) {
+      await showCustomAlertDialog(
+        context,
+        'Dapat gawin',
+        'Tanggapin ang mga Tuntunin at Kundisyon upang makarehistro.',
       );
       return;
     }
@@ -167,13 +202,59 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     DropdownInputF(
                       value: selectedGender,
-                      items: const ['Lalaki', 'Babae', 'Iba', 'Hindi gustong ilagay'],
+                      items: const [
+                        'Lalaki',
+                        'Babae',
+                        'Iba',
+                        'Hindi gustong ilagay'
+                      ],
                       hintText: "Pumili ng Kasarian",
                       onChanged: (String? newValue) {
                         setState(() {
                           selectedGender = newValue;
                         });
                       },
+                    ),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: isChecked,
+                          onChanged: (bool? value) async {
+                            if (value == true) {
+                              // Show the Terms and Conditions dialog
+                              bool? agreed = await showDialog<bool>(
+                                context: context,
+                                builder: (context) {
+                                  return TermsAndConditionsDialog();
+                                },
+                              );
+
+                              // If the user agrees, check the checkbox
+                              if (agreed == true) {
+                                setState(() {
+                                  isChecked = true;
+                                });
+                              } else {
+                                // If the user cancels, keep the checkbox unchecked
+                                setState(() {
+                                  isChecked = false;
+                                });
+                              }
+                            } else {
+                              // Allow unchecking directly
+                              setState(() {
+                                isChecked = false;
+                              });
+                            }
+                          },
+                        ),
+                        Expanded(
+                          child: Text(
+                            'I agree to the terms and conditions.',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
                     // Show loading indicator or button
@@ -218,5 +299,3 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
-
-

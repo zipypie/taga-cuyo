@@ -52,7 +52,7 @@ class _SignInScreenState extends State<SignInScreen> {
     if (emailController.text.isEmpty || passwordController.text.isEmpty) {
       await showCustomAlertDialog(
         context,
-        'Error',
+        'Ulitin muli!',
         'Pakipunan ang lahat ng form',
       );
       return;
@@ -85,16 +85,13 @@ class _SignInScreenState extends State<SignInScreen> {
         } else {
           await showCustomAlertDialog(
             context,
-            'Walang account ang natagpuan',
-            'gumawa muna ng bagong account sa Signup',
+            'Walang account',
+            'Gumawa ng bagong account para makapag-login!',
           );
         }
       } else {
-        await showCustomAlertDialog(
-          context,
-          'Walang account',
-          'Gumawa ng bagong account para makapag-login!'
-        );
+        await showCustomAlertDialog(context, 'Walang account',
+            'Gumawa ng bagong account para makapag-login!');
       }
     } catch (e) {
       Logger.log(e.toString());
@@ -126,9 +123,10 @@ class _SignInScreenState extends State<SignInScreen> {
                 color: AppColors.primaryBackground,
                 child: Column(
                   children: [
+                    SizedBox(height: 25),
                     SizedBox(
                       width: double.infinity,
-                      height: height * 0.24,
+                      height: height * 0.28,
                       child: LogoImage.logo,
                     ),
                     Container(
@@ -140,7 +138,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           style: TextStyle(
                             letterSpacing: 1,
                             fontFamily: AppFonts.kanitLight,
-                            fontSize: 16,
+                            fontSize: 17,
                           ),
                         ),
                       ),
@@ -155,17 +153,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 5.0),
-                        child: Text(
-                          'Mag-log in',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: AppFonts.kanitLight,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 20),
                       TextFieldInputF(
                         textEditingController: emailController,
@@ -215,7 +202,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         children: [
                           const Text(
                             'Wala pang account? Piliin ang',
-                            style: TextStyle(fontSize: 14),
+                            style: TextStyle(fontSize: 14,fontFamily: AppFonts.kanitLight),
                           ),
                           GestureDetector(
                             onTap: () {

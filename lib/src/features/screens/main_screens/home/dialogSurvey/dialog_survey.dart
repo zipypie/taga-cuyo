@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:taga_cuyo/src/features/constants/colors.dart';
 import 'package:taga_cuyo/src/exceptions/logger.dart';
+import 'package:taga_cuyo/src/features/constants/fontstyles.dart';
 
 class SurveyDialog extends StatefulWidget {
   final String uid;
   final VoidCallback onCompleted; // Callback for when survey is completed
 
-  const SurveyDialog({super.key, required this.uid, required this.onCompleted}); // Add onCompleted to constructor
+  const SurveyDialog(
+      {super.key,
+      required this.uid,
+      required this.onCompleted}); // Add onCompleted to constructor
 
   @override
   SurveyDialogState createState() => SurveyDialogState();
@@ -18,7 +22,8 @@ class SurveyDialogState extends State<SurveyDialog> {
 
   // Function to save the selected language to Firestore
   Future<void> saveLanguage(String language) async {
-    final userDoc = FirebaseFirestore.instance.collection('users').doc(widget.uid);
+    final userDoc =
+        FirebaseFirestore.instance.collection('users').doc(widget.uid);
 
     try {
       await userDoc.set({
@@ -38,7 +43,8 @@ class SurveyDialogState extends State<SurveyDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      backgroundColor: Colors.amber[100], // Background color
+      backgroundColor:
+          const Color.fromARGB(255, 250, 238, 203), // Background color
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -48,7 +54,8 @@ class SurveyDialogState extends State<SurveyDialog> {
               "Ano ang iyong unang/katutubong wika?",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 18,
+                fontFamily: AppFonts.fcr,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -62,11 +69,20 @@ class SurveyDialogState extends State<SurveyDialog> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: selectedLanguage == "Tagalog" ? AppColors.correct : AppColors.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                backgroundColor: selectedLanguage == "Tagalog"
+                    ? AppColors.correct
+                    : AppColors.primary,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
               ),
-              child: const Text("Tagalog", style: TextStyle(fontSize: 16)),
+              child: const Text("Tagalog",
+                  style: TextStyle(
+                    fontFamily: AppFonts.fcr,
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
             const SizedBox(height: 10),
 
@@ -78,11 +94,20 @@ class SurveyDialogState extends State<SurveyDialog> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: selectedLanguage == "Cuyonon" ? AppColors.correct : AppColors.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+                backgroundColor: selectedLanguage == "Cuyonon"
+                    ? AppColors.correct
+                    : AppColors.primary,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
               ),
-              child: const Text("Cuyonon", style: TextStyle(fontSize: 16)),
+              child: const Text("Cuyonon",
+                  style: TextStyle(
+                    fontFamily: AppFonts.fcr,
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
             const SizedBox(height: 20),
 
@@ -96,10 +121,18 @@ class SurveyDialogState extends State<SurveyDialog> {
                   : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary, // Button color
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 60),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 60),
               ),
-              child: const Text("Magsimula", style: TextStyle(fontSize: 16)),
+              child: const Text("Magsimula",
+                  style: TextStyle(
+                    color: AppColors.primaryBackground,
+                    fontFamily: AppFonts.fcr,
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold,
+                  )),
             ),
           ],
         ),
