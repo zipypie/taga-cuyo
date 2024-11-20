@@ -1,133 +1,136 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'translation_bloc.dart';
-import 'translator_event.dart';
-import 'translator_state.dart';
+import 'package:taga_cuyo/src/features/common_widgets/button.dart';
+import 'package:taga_cuyo/src/features/screens/main_screens/translator/language_model.dart';
+import 'package:taga_cuyo/src/features/screens/main_screens/translator/language_switch.dart';
 
-class TranslatorScreen extends StatelessWidget {
+class TranslatorScreen extends StatefulWidget {
+  const TranslatorScreen({super.key});
+
+  @override
+  State<TranslatorScreen> createState() => _TranslatorScreenState();
+}
+
+class _TranslatorScreenState extends State<TranslatorScreen> {
   final TextEditingController _inputController = TextEditingController();
   final TextEditingController _outputController = TextEditingController();
 
-  TranslatorScreen({super.key});
+  // Initialize LanguagePair with default languages
+  LanguagePair languagePair =
+      LanguagePair(language1: 'Tagalog', language2: 'Cuyonon');
+
+  int _inputCharCount = 0;
+  int _outputCharCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Add listeners to update character count dynamically
+    _inputController.addListener(() {
+      setState(() {
+        _inputCharCount = _inputController.text.length;
+      });
+    });
+
+    _outputController.addListener(() {
+      setState(() {
+        _outputCharCount = _outputController.text.length;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers to avoid memory leaks
+    _inputController.dispose();
+    _outputController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => TranslatorBloc(),
-      child: BlocBuilder<TranslatorBloc, TranslatorState>(
-        builder: (context, state) {
-          final cubit = BlocProvider.of<TranslatorBloc>(context);
+    // Get the media query data for screen size
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
 
-          // Update output text controller based on the state
-          if (state is TranslatorTranslated) {
-            _outputController.text = state.translatedText;
-          }
+    // Adjust padding and font sizes based on screen width
+    final isLargeScreen = screenWidth > 600;
 
-          return Scaffold(
-            body: Padding(
-              padding: const EdgeInsets.only(top: 25.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        cubit.add(ToggleTranslationDirection());
-                      },
-                      child: Image.asset(
-                        cubit.isCuyononToTagalog
-                            ? 'assets/icons/translator_ct_active.png'
-                            : 'assets/icons/translator_active.png',
-                        height: 40,
-                      ),
-                    ),
-                    _buildInputContainer(
-                        cubit, state, context), // Pass state as a parameter
-                    _buildOutputContainer(cubit, context),
-                  ],
-                ),
-              ),
+    return Scaffold(
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isLargeScreen ? 40 : 20,
+          vertical: isLargeScreen ? 40 : 25,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            // Pass the languagePair to LanguageSwitcher
+            LanguageSwitcher(
+              languagePair: languagePair,
+              onLanguageSwap: _swapLanguages,
             ),
-          );
-        },
+            SizedBox(height: screenHeight * 0.03), // 3% of screen height
+            _buildInputContainer(),
+            SizedBox(height: screenHeight * 0.02), // 2% of screen height
+            _buildOutputContainer(),
+            SizedBox(height: screenHeight * 0.04), // 4% of screen height
+            MyButton(
+              onTab: () {
+                setState(() {
+                  _outputController.text =
+                      _inputController.text; // Copy text from input to output
+                });
+              },
+              text: 'I-translate', // Button label, change it as needed
+            )
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildInputContainer(
-      TranslatorBloc cubit, TranslatorState state, BuildContext context) {
-    final width = (MediaQuery.of(context).size.width * 0.018)
-        .toInt(); // Convert to int here
+  void _swapLanguages() {
+    setState(() {
+      languagePair.swap(); // Swap the languages in the LanguagePair
+    });
+  }
+
+  Widget _buildInputContainer() {
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(30, 15, 30, 15),
+      padding: EdgeInsets.all(screenWidth * 0.04), // 4% of screen width
+      decoration: BoxDecoration(
+        color: Colors.lightBlue[100],
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            cubit.isCuyononToTagalog ? 'Cuyonon' : 'Tagalog',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            languagePair.language1, // Show the current language1
+            style: TextStyle(
+              fontSize: screenWidth * 0.05, // Font size based on screen width
+              fontWeight: FontWeight.bold,
+            ),
           ),
           TextField(
             controller: _inputController,
-            maxLines: width, // Use the integer value
-            onChanged: (text) {
-              // Trim whitespace to avoid counting it as a character
-              String trimmedText = text.trim();
-              if (trimmedText.isEmpty) {
-                _outputController
-                    .clear(); // Clear the output text when input is empty
-                cubit.add(
-                    TranslateText(trimmedText)); // Emit event for empty input
-              } else {
-                cubit.add(TranslateText(
-                    trimmedText)); // Emit event for non-empty input
-              }
-            },
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.lightBlue[100],
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                ),
-                borderSide: BorderSide.none,
-              ),
+            maxLines: 5,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(borderSide: BorderSide.none),
+              hintText: "Ilagay ang guston malaman...",
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.lightBlue[100],
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(15),
-                bottomRight: Radius.circular(15),
-              ),
-              border: const Border(
-                top: BorderSide(width: 1, color: Colors.black),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Update character count display based on current state
-                  Text(
-                    state is TranslatorTranslated
-                        ? '${state.characterCount} characters'
-                        : '0 characters', // Default to 0 if state is not TranslatorTranslated
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: () {
-                      Clipboard.setData(
-                          ClipboardData(text: _inputController.text));
-                    },
-                  ),
-                ],
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+              "$_inputCharCount characters",
+              style: TextStyle(
+                fontSize: screenWidth * 0.03, // Font size based on screen width
+                color: Colors.black54,
               ),
             ),
           ),
@@ -136,66 +139,41 @@ class TranslatorScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildOutputContainer(TranslatorBloc cubit, BuildContext context) {
-    final width = (MediaQuery.of(context).size.width * 0.018).toInt();
+  Widget _buildOutputContainer() {
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(30, 15, 30, 30),
+      padding: EdgeInsets.all(screenWidth * 0.04), // 4% of screen width
+      decoration: BoxDecoration(
+        color: Colors.lightBlue[100],
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            cubit.isCuyononToTagalog ? 'Tagalog' : 'Cuyonon',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            languagePair.language2, // Show the current language2
+            style: TextStyle(
+              fontSize: screenWidth * 0.05, // Font size based on screen width
+              fontWeight: FontWeight.bold,
+            ),
           ),
           TextField(
-            controller: _outputController, // Use _outputController for output
-            maxLines: width,
-            readOnly:
-                true, // Make it read-only if it's just for displaying translation
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.lightBlue[100],
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                ),
-                borderSide: BorderSide.none,
-              ),
+            controller: _outputController,
+            maxLines: 5,
+            readOnly: true,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(borderSide: BorderSide.none),
+              hintText: "Translation will appear here...",
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.lightBlue[100], // Color inside BoxDecoration
-              borderRadius: const BorderRadius.only(
-                bottomLeft:
-                    Radius.circular(10), // Correct radius for the bottom
-                bottomRight:
-                    Radius.circular(10), // Correct radius for the bottom
-              ),
-              border: const Border(
-                top: BorderSide(
-                    width: 1, color: Colors.black), // Only top border
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                      '${_outputController.text.length} characters'), // Count characters in output
-                  IconButton(
-                    icon: const Icon(Icons.copy),
-                    onPressed: () {
-                      // Implement copy to clipboard functionality
-                      Clipboard.setData(
-                        ClipboardData(text: _outputController.text),
-                      );
-                    },
-                  ),
-                ],
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+              "$_outputCharCount characters",
+              style: TextStyle(
+                fontSize: screenWidth * 0.03, // Font size based on screen width
+                color: Colors.black54,
               ),
             ),
           ),
