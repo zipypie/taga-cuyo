@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:taga_cuyo/src/features/common_widgets/button.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/translator/language_model.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/translator/language_switch.dart';
+import 'package:taga_cuyo/src/features/screens/main_screens/translator/translation_service.dart';
 
 class TranslatorScreen extends StatefulWidget {
   const TranslatorScreen({super.key});
@@ -11,10 +13,10 @@ class TranslatorScreen extends StatefulWidget {
 }
 
 class _TranslatorScreenState extends State<TranslatorScreen> {
-  final TextEditingController _inputController = TextEditingController();
-  final TextEditingController _outputController = TextEditingController();
+  final TranslationService service = TranslationService();
+  final TextEditingController _controller = TextEditingController();
+  String _translation = "";
 
-  // Initialize LanguagePair with default languages
   LanguagePair languagePair =
       LanguagePair(language1: 'Tagalog', language2: 'Cuyonon');
 
@@ -24,41 +26,62 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
   @override
   void initState() {
     super.initState();
-
     // Add listeners to update character count dynamically
-    _inputController.addListener(() {
+    _controller.addListener(() {
       setState(() {
-        _inputCharCount = _inputController.text.length;
-      });
-    });
-
-    _outputController.addListener(() {
-      setState(() {
-        _outputCharCount = _outputController.text.length;
+        _inputCharCount = _controller.text.length;
       });
     });
   }
 
   @override
   void dispose() {
-    // Dispose controllers to avoid memory leaks
-    _inputController.dispose();
-    _outputController.dispose();
+    _controller.dispose(); // Dispose controllers to avoid memory leaks
     super.dispose();
+  }
+
+ Future<void> _translateText() async {
+    String inputText = _controller.text.trim();
+
+    // Check if the input text ends with a period, question mark, or exclamation mark
+    if (!inputText.endsWith(".") && !inputText.endsWith("?") && !inputText.endsWith("!")) {
+      // If not, add a space and then a period
+      inputText += " .";
+    } else {
+      // Add a space before the punctuation mark if necessary
+      inputText = inputText.replaceAll(RegExp(r'([^\s])([.?!])'), r'\1 \2');
+    }
+
+    final result = await service.translate(
+      inputText,
+      sourceLang: languagePair.language1,
+      targetLang: languagePair.language2,
+    );
+    setState(() {
+      _translation = result;
+      _outputCharCount = _translation.length;
+    });
+  }
+
+  void _swapLanguages() {
+    setState(() {
+      languagePair.swap();
+    });
+    _translateText(); // Translate the text again with the new language pair
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get the media query data for screen size
     final mediaQuery = MediaQuery.of(context);
     final screenWidth = mediaQuery.size.width;
     final screenHeight = mediaQuery.size.height;
 
-    // Adjust padding and font sizes based on screen width
     final isLargeScreen = screenWidth > 600;
 
     return Scaffold(
-      body: Padding(
+      resizeToAvoidBottomInset: true, // Ensure layout resizes when keyboard shows
+      body: SingleChildScrollView(
+        // Wrap entire body with a scrollable view
         padding: EdgeInsets.symmetric(
           horizontal: isLargeScreen ? 40 : 20,
           vertical: isLargeScreen ? 40 : 25,
@@ -66,24 +89,18 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            // Pass the languagePair to LanguageSwitcher
             LanguageSwitcher(
               languagePair: languagePair,
               onLanguageSwap: _swapLanguages,
             ),
-            SizedBox(height: screenHeight * 0.03), // 3% of screen height
+            SizedBox(height: screenHeight * 0.03),
             _buildInputContainer(),
-            SizedBox(height: screenHeight * 0.02), // 2% of screen height
+            SizedBox(height: screenHeight * 0.02),
             _buildOutputContainer(),
-            SizedBox(height: screenHeight * 0.04), // 4% of screen height
+            SizedBox(height: screenHeight * 0.03),
             MyButton(
-              onTab: () {
-                setState(() {
-                  _outputController.text =
-                      _inputController.text; // Copy text from input to output
-                });
-              },
-              text: 'I-translate', // Button label, change it as needed
+              onTab: _translateText,
+              text: 'I-translate',
             )
           ],
         ),
@@ -91,17 +108,11 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
     );
   }
 
-  void _swapLanguages() {
-    setState(() {
-      languagePair.swap(); // Swap the languages in the LanguagePair
-    });
-  }
-
   Widget _buildInputContainer() {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      padding: EdgeInsets.all(screenWidth * 0.04), // 4% of screen width
+      padding: EdgeInsets.all(screenWidth * 0.04),
       decoration: BoxDecoration(
         color: Colors.lightBlue[100],
         borderRadius: BorderRadius.circular(10),
@@ -110,18 +121,19 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            languagePair.language1, // Show the current language1
+            languagePair.language1,
             style: TextStyle(
-              fontSize: screenWidth * 0.05, // Font size based on screen width
+              fontSize: screenWidth * 0.05,
               fontWeight: FontWeight.bold,
             ),
           ),
           TextField(
-            controller: _inputController,
+            controller: _controller,
             maxLines: 5,
             decoration: const InputDecoration(
               border: OutlineInputBorder(borderSide: BorderSide.none),
-              hintText: "Ilagay ang guston malaman...",
+              hintText: "Ilagay ang gustong malaman...",
+              hintStyle: TextStyle(color: Color.fromARGB(221, 89, 86, 86)),
             ),
           ),
           Align(
@@ -129,7 +141,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
             child: Text(
               "$_inputCharCount characters",
               style: TextStyle(
-                fontSize: screenWidth * 0.03, // Font size based on screen width
+                fontSize: screenWidth * 0.03,
                 color: Colors.black54,
               ),
             ),
@@ -143,7 +155,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      padding: EdgeInsets.all(screenWidth * 0.04), // 4% of screen width
+      padding: EdgeInsets.all(screenWidth * 0.04),
       decoration: BoxDecoration(
         color: Colors.lightBlue[100],
         borderRadius: BorderRadius.circular(10),
@@ -152,19 +164,20 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            languagePair.language2, // Show the current language2
+            languagePair.language2,
             style: TextStyle(
-              fontSize: screenWidth * 0.05, // Font size based on screen width
+              fontSize: screenWidth * 0.05,
               fontWeight: FontWeight.bold,
             ),
           ),
-          TextField(
-            controller: _outputController,
+          Text(
+            _translation.isNotEmpty
+                ? _translation
+                : "Dito makikita ang naisalin na salita...",
             maxLines: 5,
-            readOnly: true,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(borderSide: BorderSide.none),
-              hintText: "Translation will appear here...",
+            style: TextStyle(
+              fontSize: screenWidth * 0.04,
+              color: const Color.fromARGB(221, 89, 86, 86),
             ),
           ),
           Align(
@@ -172,7 +185,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
             child: Text(
               "$_outputCharCount characters",
               style: TextStyle(
-                fontSize: screenWidth * 0.03, // Font size based on screen width
+                fontSize: screenWidth * 0.03,
                 color: Colors.black54,
               ),
             ),

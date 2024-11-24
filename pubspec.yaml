@@ -47,19 +47,17 @@ dependencies:
   device_info_plus: ^11.1.1
   firebase_database: ^11.1.6
   flutter_animate: ^4.5.0
-  
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.14.1
+  flutter_launcher_icons: ^0.11.0
   flutter_lints: ^5.0.0
 
 
 flutter_launcher_icons:
   android: "launcher_icon"
-  ios: true
   image_path: "assets/images/Logo.png"
   adaptive_icon_background: "#ffffff"
   adaptive_icon_foreground: "assets/images/LogoRound.png"
@@ -74,9 +72,7 @@ flutter:
     - assets/images/
     - assets/images/logo.png
     - assets/images/tagacuyo_logo.png
-    - assets/model/cuyonon-tagalog.tflite
-    - assets/model/tagalog-cuyonon.tflite
-    - assets/model/taga_cuyo-dataset.txt
+
 
 
   fonts:

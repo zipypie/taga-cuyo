@@ -147,14 +147,16 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
               },
             );
             _dialogShown = true; // Ensure the dialog is only shown once
-            Logger.log("Showing SurveyDialog for UID: $uid"); // Debug Logger.log
+            Logger.log(
+                "Showing SurveyDialog for UID: $uid"); // Debug Logger.log
           });
         }
       } else {
         Logger.log("Survey already completed.");
       }
     } else {
-      Logger.log("No user is logged in."); // Handle case where no user is logged in
+      Logger.log(
+          "No user is logged in."); // Handle case where no user is logged in
     }
   }
 

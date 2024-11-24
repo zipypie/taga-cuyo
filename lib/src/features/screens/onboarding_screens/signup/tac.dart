@@ -89,27 +89,27 @@ class TermsAndConditionsDialog extends StatelessWidget {
                 // Cancel button
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context, false),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.black,
+                  ),
                   child: Text('Cancel',
                         style: TextStyle(
                             fontSize: 19,
                             fontFamily: AppFonts.fcr,
                             fontWeight: FontWeight.bold)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.black,
-                  ),
                 ),
                 // Agree button
                 ElevatedButton(
                     onPressed: () => Navigator.pop(context, true),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        foregroundColor: AppColors.primaryBackground),
                     child: Text('Agree',
                         style: TextStyle(
                             fontSize: 19,
                             fontFamily: AppFonts.fcr,
-                            fontWeight: FontWeight.bold)),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: AppColors.primaryBackground)),
+                            fontWeight: FontWeight.bold))),
               ],
             ),
           ],
