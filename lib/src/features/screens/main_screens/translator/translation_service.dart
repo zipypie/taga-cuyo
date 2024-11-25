@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class TranslationService {
-  final String apiUrl = "https://taga-cuyo-translator-598478516019.asia-southeast1.run.app/translate";
+  final String apiUrl =
+      "https://taga-cuyo-translator-598478516019.asia-southeast1.run.app/translate";
 
-  Future<String> translate(String sentence, {required String sourceLang, required String targetLang}) async {
-    const int maxRetries = 3;  // Max number of retries
-    const Duration retryDelay = Duration(seconds: 3);  // Delay between retries
+  Future<String> translate(String sentence,
+      {required String sourceLang, required String targetLang}) async {
+    const int maxRetries = 3;
+    const Duration retryDelay = Duration(seconds: 3);
 
     int attempt = 0;
     while (attempt < maxRetries) {
@@ -21,6 +23,10 @@ class TranslationService {
           }),
         );
 
+        // Log the response to debug
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
           return data["translation"] ?? "Translation failed";
@@ -32,7 +38,7 @@ class TranslationService {
         if (attempt >= maxRetries) {
           return "Error: $e after $maxRetries attempts";
         }
-        await Future.delayed(retryDelay);  // Wait before retrying
+        await Future.delayed(retryDelay);
       }
     }
     return "Error: Max retries reached";

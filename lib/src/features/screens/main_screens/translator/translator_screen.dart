@@ -40,7 +40,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
     super.dispose();
   }
 
- Future<void> _translateText() async {
+  Future<void> _translateText() async {
     String inputText = _controller.text.trim();
 
     // Check if the input text ends with a period, question mark, or exclamation mark
@@ -67,7 +67,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
     setState(() {
       languagePair.swap();
     });
-    _translateText(); // Translate the text again with the new language pair
+    // Do not trigger translation here
   }
 
   @override
@@ -91,7 +91,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
           children: [
             LanguageSwitcher(
               languagePair: languagePair,
-              onLanguageSwap: _swapLanguages,
+              onLanguageSwap: _swapLanguages, // Only swap languages
             ),
             SizedBox(height: screenHeight * 0.03),
             _buildInputContainer(),
@@ -99,7 +99,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
             _buildOutputContainer(),
             SizedBox(height: screenHeight * 0.03),
             MyButton(
-              onTab: _translateText,
+              onTab: _translateText,  // Trigger translation here
               text: 'I-translate',
             )
           ],
