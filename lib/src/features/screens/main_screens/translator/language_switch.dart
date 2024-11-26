@@ -32,7 +32,7 @@ class LanguageSwitcherState extends State<LanguageSwitcher> with SingleTickerPro
     );
 
     // Initialize the slide animations with adjusted positions
-    _slideAnimation1 = Tween<Offset>(begin: const Offset(0, 0), end: Offset(1.5, 0))
+    _slideAnimation1 = Tween<Offset>(begin: Offset(0, 0), end: Offset(1.5, 0))
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _slideAnimation2 = Tween<Offset>(begin: Offset(0, 0), end: Offset(-1.5, 0))
@@ -41,7 +41,9 @@ class LanguageSwitcherState extends State<LanguageSwitcher> with SingleTickerPro
 
   void swapLanguages() {
     widget.onLanguageSwap(); // Call the callback to swap languages in TranslatorScreen
+    _controller.reset(); // Reset the animation controller
     _controller.forward(from: 0.0); // Restart the slide animation
+    setState(() {}); // Ensure the state is updated
   }
 
   @override
@@ -77,7 +79,7 @@ class LanguageSwitcherState extends State<LanguageSwitcher> with SingleTickerPro
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Text(
-                    widget.languagePair.language1, // Display language1
+                    widget.languagePair.language2, // Display language1
                     style: const TextStyle(
                       color: AppColors.titleColor,
                       fontSize: 21,
@@ -108,7 +110,7 @@ class LanguageSwitcherState extends State<LanguageSwitcher> with SingleTickerPro
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Text(
-                    widget.languagePair.language2, // Display language2
+                    widget.languagePair.language1, // Display language2
                     style: const TextStyle(
                       color: AppColors.titleColor,
                       fontSize: 21,

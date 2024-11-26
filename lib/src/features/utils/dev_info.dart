@@ -1,5 +1,6 @@
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
+import 'package:taga_cuyo/src/exceptions/logger.dart';
 
 Future<Map<String, String>> getDeviceInfo() async {
   final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -17,7 +18,7 @@ Future<Map<String, String>> getDeviceInfo() async {
       osVersion = iosInfo.systemVersion;
     }
   } catch (e) {
-    print("Error fetching device info: $e");
+    Logger.log("Error fetching device info: $e");
   }
 
   return {

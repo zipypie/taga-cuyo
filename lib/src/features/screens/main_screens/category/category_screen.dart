@@ -96,39 +96,43 @@ class _CategoryScreenState extends State<CategoryScreen>
   }
 
   Widget _categoryCard(Category category) {
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return FutureBuilder<int>(
       future: _categoryService.getCompletedSubcategoriesCount(
           userId!, category.id), // Fetch the count
       builder: (context, snapshot) {
         int completedCount = snapshot.data ?? 0; // Get the completed count
         return Container(
-          height: MediaQuery.of(context).size.height * 0.277,
+          height: screenHeight * 0.276,
           decoration: const BoxDecoration(
             border: Border(
-              bottom:
-                  BorderSide(width: 3, color: Color.fromARGB(255, 96, 96, 96)),
+              bottom: BorderSide(
+                width: 3,
+                color: Color.fromARGB(255, 96, 96, 96),
+              ),
             ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                padding: const EdgeInsets.fromLTRB(15, 12, 12, 12),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       capitalizeFirstLetter(category.id),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: AppFonts.fcb,
-                        fontSize: 21,
+                        fontSize: screenHeight * 0.025, // Responsive font size
                       ),
                     ),
                     Text(
                       '$completedCount/${category.subcategories.length}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: AppFonts.fcr,
-                        fontSize: 16,
+                        fontSize: screenHeight * 0.021, // Responsive font size
                         color: Colors.grey,
                       ),
                     ),
@@ -223,7 +227,8 @@ class SubcategoryCard extends StatelessWidget {
         onCompleted(); // Refresh data on return from CategoryQuizScreen
       },
       child: SizedBox(
-        width: contentWidth * 0.33, // 33% of the screen width
+        width: contentWidth * 0.333,
+        height: contentWidth * 0.453, // 33% of the screen width
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -252,9 +257,8 @@ class SubcategoryCard extends StatelessWidget {
                     : const Center(child: Text('Imahe ay hindi magagamit')),
               ),
             ),
-            const SizedBox(height: 5),
             SizedBox(
-              height: contentWidth * 0.15,
+              height: contentWidth * 0.14,
               child: Text(
                 capitalizeFirstLetter(subcategory.name),
                 style: TextStyle(

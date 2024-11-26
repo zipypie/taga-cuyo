@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:taga_cuyo/src/exceptions/logger.dart';
 
 class TranslationService {
   final String apiUrl =
@@ -9,6 +10,9 @@ class TranslationService {
       {required String sourceLang, required String targetLang}) async {
     const int maxRetries = 3;
     const Duration retryDelay = Duration(seconds: 3);
+
+    // Convert the sentence to lowercase
+    sentence = sentence.toLowerCase();
 
     int attempt = 0;
     while (attempt < maxRetries) {
@@ -24,12 +28,12 @@ class TranslationService {
         );
 
         // Log the response to debug
-        print('Response status: ${response.statusCode}');
-        print('Response body: ${response.body}');
+        Logger.log('Response status: ${response.statusCode}');
+        Logger.log('Response body: ${response.body}');
 
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
-          return data["translation"] ?? "Translation failed";
+          return data["translated_sentence"] ?? "Translation failed";
         } else {
           return "Error: ${response.statusCode}";
         }

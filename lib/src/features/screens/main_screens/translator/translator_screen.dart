@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
+import 'package:taga_cuyo/src/exceptions/logger.dart';
 import 'package:taga_cuyo/src/features/common_widgets/button.dart';
+import 'package:taga_cuyo/src/features/constants/colors.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/translator/language_model.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/translator/language_switch.dart';
+import 'package:taga_cuyo/src/features/screens/main_screens/translator/translate_service.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/translator/translation_service.dart';
 
 class TranslatorScreen extends StatefulWidget {
@@ -13,15 +16,19 @@ class TranslatorScreen extends StatefulWidget {
 }
 
 class _TranslatorScreenState extends State<TranslatorScreen> {
+  FirebaseService firebaseService = FirebaseService();
   final TranslationService service = TranslationService();
   final TextEditingController _controller = TextEditingController();
-  String _translation = "";
+  final TextEditingController _outputController =
+      TextEditingController(); // Add a new controller for output
 
+  String _translation = "";
   LanguagePair languagePair =
       LanguagePair(language1: 'Tagalog', language2: 'Cuyonon');
 
   int _inputCharCount = 0;
   int _outputCharCount = 0;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -37,37 +44,64 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
   @override
   void dispose() {
     _controller.dispose(); // Dispose controllers to avoid memory leaks
+    _outputController.dispose(); // Dispose the output controller as well
     super.dispose();
   }
 
-  Future<void> _translateText() async {
-    String inputText = _controller.text.trim();
+ Future<void> _translateText() async {
+  setState(() {
+    _isLoading = true; // Start loading when translation starts
+  });
 
-    // Check if the input text ends with a period, question mark, or exclamation mark
-    if (!inputText.endsWith(".") && !inputText.endsWith("?") && !inputText.endsWith("!")) {
-      // If not, add a space and then a period
-      inputText += " .";
-    } else {
-      // Add a space before the punctuation mark if necessary
-      inputText = inputText.replaceAll(RegExp(r'([^\s])([.?!])'), r'\1 \2');
-    }
+  String inputText = _controller.text.trim();
 
+  // Check if the input text ends with a period, question mark, or exclamation mark
+  if (!inputText.endsWith(".") &&
+      !inputText.endsWith("?") &&
+      !inputText.endsWith("!")) {
+    // If not, add a space and then a period
+    inputText += " .";
+  } else {
+
+    inputText += " .";
+  }
+
+  try {
     final result = await service.translate(
       inputText,
       sourceLang: languagePair.language1,
       targetLang: languagePair.language2,
     );
+    
     setState(() {
       _translation = result;
       _outputCharCount = _translation.length;
+      _outputController.text = _translation; // Update output controller text
+      _isLoading = false; // Stop loading after translation is complete
     });
+
+    // Save only the sentence and source language to Firebase
+    if (result != "Translation failed" && result != "Error: Max retries reached") {
+      await firebaseService.saveTranslationToFirebase(inputText, languagePair.language1);
+    } else {
+      Logger.log("Translation failed or error occurred, not saving to Firestore.");
+    }
+  } catch (error) {
+    setState(() {
+      _isLoading = false; // Stop loading if there is an error
+    });
+    Logger.log("Error during translation: $error");
   }
+}
+
 
   void _swapLanguages() {
     setState(() {
       languagePair.swap();
     });
-    // Do not trigger translation here
+    // Reset translation and output fields after swap
+    _controller.clear();
+    _outputController.clear();
   }
 
   @override
@@ -79,9 +113,8 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
     final isLargeScreen = screenWidth > 600;
 
     return Scaffold(
-      resizeToAvoidBottomInset: true, // Ensure layout resizes when keyboard shows
+      resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-        // Wrap entire body with a scrollable view
         padding: EdgeInsets.symmetric(
           horizontal: isLargeScreen ? 40 : 20,
           vertical: isLargeScreen ? 40 : 25,
@@ -93,15 +126,20 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
               languagePair: languagePair,
               onLanguageSwap: _swapLanguages, // Only swap languages
             ),
-            SizedBox(height: screenHeight * 0.03),
+            SizedBox(height: screenHeight * 0.02),
             _buildInputContainer(),
             SizedBox(height: screenHeight * 0.02),
             _buildOutputContainer(),
-            SizedBox(height: screenHeight * 0.03),
-            MyButton(
-              onTab: _translateText,  // Trigger translation here
-              text: 'I-translate',
-            )
+            SizedBox(height: screenHeight * 0.018),
+            _isLoading
+                ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                        AppColors.primaryBackground),
+                  ) // Show the loading indicator while translating
+                : MyButton(
+                    onTab: _translateText, // Trigger translation here
+                    text: 'I-translate',
+                  ),
           ],
         ),
       ),
@@ -109,9 +147,12 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
   }
 
   Widget _buildInputContainer() {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
 
     return Container(
+      height: screenHeight * 0.27,
       padding: EdgeInsets.all(screenWidth * 0.04),
       decoration: BoxDecoration(
         color: Colors.lightBlue[100],
@@ -152,41 +193,67 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
   }
 
   Widget _buildOutputContainer() {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
 
     return Container(
+      height: screenHeight * 0.27,
       padding: EdgeInsets.all(screenWidth * 0.04),
       decoration: BoxDecoration(
         color: Colors.lightBlue[100],
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Text(
-            languagePair.language2,
-            style: TextStyle(
-              fontSize: screenWidth * 0.05,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            _translation.isNotEmpty
-                ? _translation
-                : "Dito makikita ang naisalin na salita...",
-            maxLines: 5,
-            style: TextStyle(
-              fontSize: screenWidth * 0.04,
-              color: const Color.fromARGB(221, 89, 86, 86),
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                languagePair.language2,
+                style: TextStyle(
+                  fontSize: screenWidth * 0.05,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextField(
+                controller: _outputController, // Use the output controller
+                readOnly: true,
+                maxLines: 5,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(borderSide: BorderSide.none),
+                  hintText: "Dito ang isinalin",
+                  hintStyle: TextStyle(color: Color.fromARGB(221, 89, 86, 86)),
+                ),
+                style: TextStyle(
+                  fontSize: screenWidth * 0.04,
+                  color: const Color.fromARGB(221, 89, 86, 86),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Text(
+                  "$_outputCharCount characters",
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.03,
+                    color: Colors.black54,
+                  ),
+                ),
+              ),
+            ],
           ),
           Align(
-            alignment: Alignment.bottomRight,
-            child: Text(
-              "$_outputCharCount characters",
-              style: TextStyle(
-                fontSize: screenWidth * 0.03,
+            alignment: Alignment.bottomLeft,
+            child: IconButton(
+              onPressed: () {
+                if (_translation.isNotEmpty) {
+                  Clipboard.setData(ClipboardData(text: _translation));
+                }
+              },
+              icon: Icon(
+                Icons.copy,
                 color: Colors.black54,
+                size: screenWidth * 0.06,
               ),
             ),
           ),

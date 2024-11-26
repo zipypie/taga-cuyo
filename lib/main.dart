@@ -5,8 +5,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:taga_cuyo/src/features/common_widgets/loading_animation/splash_screen.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/home/dialogSurvey/dialog_survey.dart';
-import 'package:taga_cuyo/src/features/services/auth_wrapper.dart';
 import 'package:taga_cuyo/src/features/services/authentication.dart';
 import 'package:taga_cuyo/src/features/services/day_count.dart';
 import 'package:taga_cuyo/src/features/services/streak_count.dart';
@@ -181,7 +181,7 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
         child: const MaterialApp(
           title: 'Taga-Cuyo App',
           debugShowCheckedModeBanner: false,
-          home: AuthWrapper(),
+          home: Splashscreen(), // Set Splashscreen as the initial screen
         ),
       ),
     );
