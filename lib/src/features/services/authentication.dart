@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart'; 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:taga_cuyo/src/exceptions/logger.dart';
 
@@ -14,12 +14,28 @@ class AuthService {
     return currentUser?.uid; // Return the user's ID if they are logged in
   }
 
+  // Check if the current user's email is verified
+  bool get isEmailVerified => currentUser?.emailVerified ?? false;
+
   // Fetch user data from Firestore
   Future<DocumentSnapshot?> getUserData() async {
     if (currentUser != null) {
       return await _firestore.collection('users').doc(currentUser!.uid).get();
     }
     return null;
+  }
+
+  Future<String> sendEmailVerificationOTP(String email) async {
+    // Simulate sending OTP, replace with your backend logic
+    await Future.delayed(const Duration(seconds: 2)); // Simulate delay
+    return "OTP sent successfully to $email";
+  }
+
+  // Send email verification to the user
+  Future<void> sendEmailVerification(String text) async {
+    if (currentUser != null && !isEmailVerified) {
+      await currentUser!.sendEmailVerification();
+    }
   }
 
   // Update user email in Firestore
@@ -48,13 +64,13 @@ class AuthService {
       try {
         // Reauthenticate the user before updating the email
         await reauthenticateUser(password);
-        
+
         // Send verification email for new email address
         await currentUser!.verifyBeforeUpdateEmail(email);
-        
+
         // Update the email in Firestore (optional, can be done after verification)
         await updateUserEmail(email);
-        
+
         Logger.log('Verification email sent to $email.');
       } catch (e) {
         Logger.log('Failed to update email: ${e.toString()}');
@@ -64,62 +80,59 @@ class AuthService {
   }
 
   // Sign out the user
-Future<String> signUpUser({
-  required String firstname,
-  required String lastname,
-  required String email,
-  required String password,
-  required int age, // Now using int for age
-  required String gender,
-  String? profileImage,
-  String? motherTounge,
-}) async {
-  String res = "Some error occurred";
-  try {
-    // Create a user with email and password
-    UserCredential credential = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+  Future<String> signUpUser({
+    required String firstname,
+    required String lastname,
+    required String email,
+    required String password,
+    required int age, // Now using int for age
+    required String gender,
+    String? profileImage,
+    String? motherTounge,
+  }) async {
+    String res = "Some error occurred";
+    try {
+      // Create a user with email and password
+      UserCredential credential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    String uid = credential.user!.uid;
+      String uid = credential.user!.uid;
 
-    // Add user details to Firestore
-    await _firestore.collection('users').doc(uid).set({
-      'firstname': firstname,
-      'lastname': lastname,
-      'email': email,
-      'age': age, // Now using int for age
-      'gender': gender,
-      'uid': uid,
-      'date_joined': DateTime.now(),
-      'profile_image': profileImage ?? '', // Default to empty string if null
-      'mother_tongue': motherTounge ?? '',
-      'hasCompletedSurvey': false, // Always set to false
-      'status': 'offline',  // Adding status field
-      'lastSeen': FieldValue.serverTimestamp(), 
-    });
+      // Add user details to Firestore
+      await _firestore.collection('users').doc(uid).set({
+        'firstname': firstname,
+        'lastname': lastname,
+        'email': email,
+        'age': age, // Now using int for age
+        'gender': gender,
+        'uid': uid,
+        'date_joined': DateTime.now(),
+        'profile_image': profileImage ?? '', // Default to empty string if null
+        'mother_tongue': motherTounge ?? '',
+        'hasCompletedSurvey': false, // Always set to false
+        'status': 'offline', // Adding status field
+        'lastSeen': FieldValue.serverTimestamp(),
+      });
 
-    // Add progress details to 'user_progress' collection with default values
-    await _firestore.collection('user_progress').doc(uid).set({
-      'categories': 0,  // Default value
-      'days': 0,        // Default value
-      'lessons': 0,     // Default value
-      'minutes': 0,     // Default value
-      'streak': 0,  
-      'longest_streak': 0,    // Default value
-    });
+      // Add progress details to 'user_progress' collection with default values
+      await _firestore.collection('user_progress').doc(uid).set({
+        'categories': 0, // Default value
+        'days': 0, // Default value
+        'lessons': 0, // Default value
+        'minutes': 0, // Default value
+        'streak': 0,
+        'longest_streak': 0, // Default value
+      });
 
-    res = "Success";
-  } catch (e) {
-    Logger.log(e.toString());
-    res = e.toString();
+      res = "Success";
+    } catch (e) {
+      Logger.log(e.toString());
+      res = e.toString();
+    }
+    return res;
   }
-  return res;
-}
-
-
-
 
   // Log in a user
   Future<Map<String, dynamic>> signInUser({
@@ -129,6 +142,7 @@ Future<String> signUpUser({
     Map<String, dynamic> res = {
       'res': "Some error occurred",
       'uid': null,
+      'isEmailVerified': false,
     };
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
@@ -138,6 +152,7 @@ Future<String> signUpUser({
 
       res['res'] = "Success";
       res['uid'] = credential.user?.uid; // Save the UID for further use
+      res['isEmailVerified'] = credential.user?.emailVerified ?? false;
     } catch (e) {
       Logger.log(e.toString());
       res['res'] = e.toString();

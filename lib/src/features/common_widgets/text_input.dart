@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taga_cuyo/src/features/constants/colors.dart';
+import 'package:taga_cuyo/src/features/constants/fontstyles.dart';
 
 class TextFieldInputF extends StatefulWidget {
   final TextEditingController textEditingController;
@@ -39,8 +40,9 @@ class TextFieldInputFState extends State<TextFieldInputF> {
             decoration: InputDecoration(
               hintText: widget.hintText,
               hintStyle: const TextStyle(
-                color: Color.fromARGB(115, 58, 48, 48),
-                fontSize: 16,
+                fontFamily: AppFonts.fcb,
+                color: Color.fromARGB(115, 39, 32, 32),
+                fontSize: 18,
               ),
               prefixIcon: Icon(
                 widget.icon,

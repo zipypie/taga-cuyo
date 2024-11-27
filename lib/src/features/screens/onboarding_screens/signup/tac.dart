@@ -18,7 +18,7 @@ class TermsAndConditionsDialog extends StatelessWidget {
           children: [
             // Dialog title
             Text(
-              'Terms and Conditions',
+              'Mga Termino at Kundisyon',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const Divider(),
@@ -28,55 +28,55 @@ class TermsAndConditionsDialog extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Please read these Terms and Conditions carefully before using the TAGA-CUYO: Tagalog Cuyonon Translator and Learning Application operated by our company.\n\n'
-                      'By accessing, or using our Service, you agree to be bound by these Terms. If you disagree with any part of the Terms, you may not access or use the Service.\n\n',
+                      'Mangyaring basahin nang mabuti ang mga Termino at Kundisyong ito bago gamitin ang TAGA-CUYO: Tagalog Cuyonon Translator at Learning Application na pinapatakbo ng aming kumpanya.\n\n'
+                      'Sa pag-access o paggamit ng aming Serbisyo, sumasang-ayon kang sumunod sa mga Termino. Kung hindi ka sang-ayon sa anumang bahagi ng mga Termino, hindi mo maaaring gamitin ang Serbisyo.\n\n',
                       style: TextStyle(fontSize: 16),
                     ),
                     Text(
-                      '1. Acceptance of Terms',
+                      '1. Pagtanggap sa mga Termino',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      'By accessing or using TAGA-CUYO, you agree to these Terms, which constitute a legally binding agreement between you as user and our company. These Terms govern your use of our Service, including any updates or new features provided.\n\n',
+                      'Sa pag-access o paggamit ng TAGA-CUYO, sumasang-ayon ka sa mga Termino na bumubuo ng isang ligal na kasunduan sa pagitan mo bilang user at ng aming kumpanya. Pinamamahalaan ng mga Termino na ito ang iyong paggamit ng aming Serbisyo, kabilang ang anumang mga update o bagong tampok na ibinibigay.\n\n',
                       style: TextStyle(fontSize: 16),
                     ),
                     Text(
-                      '2. User Account',
+                      '2. Account ng User',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      '• You may be required to create an account to access certain features of the Service.\n'
-                      '• You agree to provide accurate, current, and complete information during registration.\n'
-                      '• You are responsible for maintaining the confidentiality of your account and password, and for restricting access to your device. You accept responsibility for all activities that occur under your account.\n\n',
+                      '• Maaaring kailanganin mong gumawa ng account upang ma-access ang ilang mga tampok ng Serbisyo.\n'
+                      '• Sumasang-ayon kang magbigay ng tumpak, kasalukuyan, at kumpletong impormasyon sa pagrehistro.\n'
+                      '• Ikaw ay responsable sa pagpapanatili ng pagiging kompidensiyal ng iyong account at password, at sa pagbabawal ng access sa iyong device. Tinanggap mo ang responsibilidad sa lahat ng mga aktibidad na nangyayari sa ilalim ng iyong account.\n\n',
                       style: TextStyle(fontSize: 16),
                     ),
                     Text(
-                      '3. Use of the Service',
+                      '3. Paggamit ng Serbisyo',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      '• The Service is intended for personal, non-commercial use.\n'
-                      '• You may not use the Service for any illegal or unauthorized purposes.\n'
-                      '• You agree not to attempt to copy, modify, reverse engineer, or distribute any part of the Service.\n'
-                      '• You must not misuse the Service by knowingly introducing viruses or other malicious or harmful material.\n\n',
+                      '• Ang Serbisyo ay inilaan para sa personal na, hindi pang-komersyal na paggamit.\n'
+                      '• Hindi mo maaaring gamitin ang Serbisyo para sa anumang ilegal o hindi awtorisadong layunin.\n'
+                      '• Sumasang-ayon kang huwag subukang kopyahin, baguhin, baligtarin ang inhenyeriya, o ipamahagi ang anumang bahagi ng Serbisyo.\n'
+                      '• Hindi mo dapat abusuhin ang Serbisyo sa pamamagitan ng sadya o hindi sinasadyang pagpapakilala ng mga virus o iba pang mapanganib na materyal.\n\n',
                       style: TextStyle(fontSize: 16),
                     ),
                     Text(
-                      '4. Prohibited Conduct',
+                      '4. Ipinagbabawal na Gawain',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      '• Violating any local, national, or international law.\n'
-                      '• Using the Service in a way that could harm, disable, overburden, or impair its functionality.\n'
-                      '• Interfering with other users\' enjoyment of the Service.\n'
-                      '• Harvesting or collecting personal data from the Service without consent.\n\n',
+                      '• Paglabag sa anumang lokal, pambansa, o internasyonal na batas.\n'
+                      '• Paggamit ng Serbisyo sa paraang makakapinsala, makakapag-disable, makakapagpabigat, o makakapinsala sa kakayahan nito.\n'
+                      '• Pag-abala sa kasiyahan ng ibang mga gumagamit ng Serbisyo.\n'
+                      '• Pagkolekta o pagkuha ng personal na datos mula sa Serbisyo nang walang pahintulot.\n\n',
                       style: TextStyle(fontSize: 16),
                     ),
-                    // Add more sections as needed
+                    // Magdagdag pa ng mga seksyon kung kinakailangan
                   ],
                 ),
               ),
@@ -93,7 +93,7 @@ class TermsAndConditionsDialog extends StatelessWidget {
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.black,
                   ),
-                  child: Text('Cancel',
+                  child: Text('Kanselahin',
                         style: TextStyle(
                             fontSize: 19,
                             fontFamily: AppFonts.fcr,
@@ -105,7 +105,7 @@ class TermsAndConditionsDialog extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         foregroundColor: AppColors.primaryBackground),
-                    child: Text('Agree',
+                    child: Text('Sumang-ayon',
                         style: TextStyle(
                             fontSize: 19,
                             fontFamily: AppFonts.fcr,

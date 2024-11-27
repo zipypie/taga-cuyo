@@ -132,7 +132,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   children: [
                     SizedBox(
                       width: double.infinity,
-                      height: height * 0.23,
+                      height: height * 0.15,
                       child: LogoImage.logo,
                     ),
                     const Center(
@@ -250,13 +250,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         Expanded(
                           child: Text(
-                            'I agree to the terms and conditions.',
-                            style: TextStyle(fontSize: 16),
+                            'Sumasang-ayon ako sa mga tuntunin at kondisyon.',
+                            style: TextStyle(
+                                fontSize: 18, fontFamily: AppFonts.fcr),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     // Show loading indicator or button
                     isLoading
                         ? const CircularProgressIndicator() // Loading spinner
@@ -267,7 +268,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       children: [
                         const Text(
                           'Mayroon ng account? Piliin ang',
-                          style: TextStyle(fontSize: 14),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: AppFonts.kanitLight,
+                          ),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -282,7 +286,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           child: const Text(
                             ' Login.',
                             style: TextStyle(
-                              fontSize: 16,
+                              fontSize: 18,
+                              fontFamily: AppFonts.kanitLight,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

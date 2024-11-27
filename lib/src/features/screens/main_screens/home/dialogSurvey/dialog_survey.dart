@@ -39,6 +39,7 @@ class SurveyDialogState extends State<SurveyDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width*0.5;
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -62,77 +63,111 @@ class SurveyDialogState extends State<SurveyDialog> {
             const SizedBox(height: 20),
 
             // Tagalog Button
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  selectedLanguage = "Tagalog";
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedLanguage == "Tagalog"
-                    ? AppColors.correct
-                    : AppColors.primary,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+            SizedBox(
+              width: width, // Ensures the button takes full width
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedLanguage = "Tagalog";
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedLanguage == "Tagalog"
+                      ? AppColors.correct
+                      : AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: const Text("Tagalog",
+                    style: TextStyle(
+                      fontFamily: AppFonts.fcr,
+                      fontSize: 23,
+                      fontWeight: FontWeight.bold,
+                    )),
               ),
-              child: const Text("Tagalog",
-                  style: TextStyle(
-                    fontFamily: AppFonts.fcr,
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                  )),
             ),
             const SizedBox(height: 10),
 
             // Cuyonon Button
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  selectedLanguage = "Cuyonon";
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedLanguage == "Cuyonon"
-                    ? AppColors.correct
-                    : AppColors.primary,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+            SizedBox(
+              width: width, // Ensures the button takes full width
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedLanguage = "Cuyonon";
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedLanguage == "Cuyonon"
+                      ? AppColors.correct
+                      : AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: const Text("Cuyonon",
+                    style: TextStyle(
+                      fontFamily: AppFonts.fcr,
+                      fontSize: 23,
+                      fontWeight: FontWeight.bold,
+                    )),
               ),
-              child: const Text("Cuyonon",
-                  style: TextStyle(
-                    fontFamily: AppFonts.fcr,
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                  )),
+            ),
+            const SizedBox(height: 10),
+
+            // Iba Button
+            SizedBox(
+              width: width, // Ensures the button takes full width
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    selectedLanguage = "Iba";
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedLanguage == "Iba"
+                      ? AppColors.correct
+                      : AppColors.primary,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                ),
+                child: const Text("Iba",
+                    style: TextStyle(
+                      fontFamily: AppFonts.fcr,
+                      fontSize: 23,
+                      fontWeight: FontWeight.bold,
+                    )),
+              ),
             ),
             const SizedBox(height: 20),
 
             // Magsimula Button
-            ElevatedButton(
-              onPressed: selectedLanguage != null
-                  ? () {
-                      saveLanguage(selectedLanguage!);
-                      Navigator.of(context).pop(); // Close the dialog
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary, // Button color
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 60),
+            SizedBox(
+              width: double.infinity, // Ensures the button takes full width
+              child: ElevatedButton(
+                onPressed: selectedLanguage != null
+                    ? () {
+                        saveLanguage(selectedLanguage!);
+                        Navigator.of(context).pop(); // Close the dialog
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary, // Button color
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 60),
+                ),
+                child: const Text("Magsimula",
+                    style: TextStyle(
+                      color: AppColors.primaryBackground,
+                      fontFamily: AppFonts.fcb,
+                      fontSize: 23,
+                      fontWeight: FontWeight.bold,
+                    )),
               ),
-              child: const Text("Magsimula",
-                  style: TextStyle(
-                    color: AppColors.primaryBackground,
-                    fontFamily: AppFonts.fcr,
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                  )),
             ),
           ],
         ),

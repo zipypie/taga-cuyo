@@ -6,6 +6,7 @@ import 'package:taga_cuyo/src/features/constants/colors.dart';
 import 'package:taga_cuyo/src/features/constants/logo.dart';
 import 'package:taga_cuyo/src/features/screens/onboarding_screens/forget_password/forget_password.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/home/home_screen.dart';
+import 'package:taga_cuyo/src/features/screens/onboarding_screens/login/email_verification.dart';
 import 'package:taga_cuyo/src/features/screens/onboarding_screens/signup/sign_up.dart';
 import 'package:taga_cuyo/src/features/constants/fontstyles.dart';
 import 'package:taga_cuyo/src/features/services/authentication.dart';
@@ -34,7 +35,7 @@ class _SignInScreenState extends State<SignInScreen> {
         await showCustomAlertDialog(
           context,
           'Walang account ang natagpuan',
-          'gumawa muna ng bagong account sa Signup',
+          'Gumawa muna ng bagong account sa Signup',
         );
         return null;
       }
@@ -42,7 +43,7 @@ class _SignInScreenState extends State<SignInScreen> {
       showCustomAlertDialog(
         context,
         'Walang account ang natagpuan',
-        'gumawa muna ng bagong account sa Signup',
+        'Gumawa muna ng bagong account sa Signup',
       );
       return null;
     }
@@ -73,15 +74,23 @@ class _SignInScreenState extends State<SignInScreen> {
         Map<String, dynamic>? userData = await getUserData(uid);
 
         if (userData != null) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(
-                uid: uid,
-                userData: userData,
+          bool isEmailVerified =
+              res['isEmailVerified']; // I-check kung na-verify ang email
+
+          if (isEmailVerified) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                  uid: uid,
+                  userData: userData,
+                ),
               ),
-            ),
-          );
+            );
+          } else {
+            // Ipakita ang email verification dialog kung hindi pa na-verify ang email
+            showEmailVerificationDialog(context, emailController.text);
+          }
         } else {
           await showCustomAlertDialog(
             context,
@@ -90,15 +99,18 @@ class _SignInScreenState extends State<SignInScreen> {
           );
         }
       } else {
-        await showCustomAlertDialog(context, 'Walang account',
-            'Gumawa ng bagong account para makapag-login!');
+        await showCustomAlertDialog(
+          context,
+          'Walang account',
+          'Gumawa ng bagong account para makapag-login!',
+        );
       }
     } catch (e) {
       Logger.log(e.toString());
       await showCustomAlertDialog(
         context,
         'Error',
-        'An error occurred while logging in: ${e.toString()}',
+        'May nangyaring error habang naglo-login: ${e.toString()}',
       );
     } finally {
       setState(() {
@@ -138,7 +150,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           style: TextStyle(
                             letterSpacing: 1,
                             fontFamily: AppFonts.kanitLight,
-                            fontSize: 17,
+                            fontSize: 18,
                           ),
                         ),
                       ),
@@ -181,12 +193,14 @@ class _SignInScreenState extends State<SignInScreen> {
                                 ),
                               );
                             },
-                            child: const Text(
-                              'Nakalimutan ang password',
+                            child: Text(
+                              'Nakalimutan ang password!',
                               style: TextStyle(
+                                letterSpacing: 1,
                                 fontFamily: AppFonts.kanitLight,
                                 fontSize: 16,
-                                color: Color.fromARGB(255, 47, 87, 234),
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF0089EA),
                               ),
                             ),
                           ),
@@ -202,7 +216,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         children: [
                           const Text(
                             'Wala pang account? Piliin ang',
-                            style: TextStyle(fontSize: 14,fontFamily: AppFonts.kanitLight),
+                            style: TextStyle(
+                                fontFamily: AppFonts.kanitLight,
+                                fontSize: 16,
+                            ),
                           ),
                           GestureDetector(
                             onTap: () {
@@ -216,7 +233,9 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: const Text(
                               ' SignUp.',
                               style: TextStyle(
-                                fontSize: 16,
+                                fontFamily: AppFonts.kanitLight,
+                                fontSize: 17,
+                                letterSpacing: 1,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

@@ -41,7 +41,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
       await FirebaseAuth.instance.sendPasswordResetEmail(
         email: emailController.text,
       );
-      showCustomAlertDialog(context, 'Matagumpay','Naipadala na sa iyong email ang link sa pag-reset ng password.');
+      showCustomAlertDialog(context, 'Matagumpay',
+          'Naipadala na sa iyong email ang link sa pag-reset ng password.');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         // If no account exists, show an error message
@@ -67,7 +68,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       body: SafeArea(
-        child: SingleChildScrollView( // Wrap the entire content in SingleChildScrollView
+        child: SingleChildScrollView(
+          // Wrap the entire content in SingleChildScrollView
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,7 +95,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
               ),
               Container(
                 height: height / 2.025,
-                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                 decoration: const BoxDecoration(
                   color: AppColors.secondaryBackground,
                 ),
@@ -124,7 +127,8 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     ),
                     const SizedBox(height: 15),
                     MyButton(
-                      onTab: () => sendPasswordResetEmail(context), // Pass context here
+                      onTab: () =>
+                          sendPasswordResetEmail(context), // Pass context here
                       text: "Magpadala ng link sa E-mail",
                     ),
                     if (isLoading)
@@ -138,7 +142,10 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                       children: [
                         const Text(
                           'Mayroon ng account? Piliin ang',
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: AppFonts.kanitLight,
+                          ),
                         ),
                         GestureDetector(
                           onTap: () {
@@ -153,7 +160,9 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                           child: const Text(
                             ' Login',
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: 16,
+                              fontFamily: AppFonts.kanitLight,
+                              letterSpacing: 1,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
