@@ -97,7 +97,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
       if (result != "Translation failed" &&
           result != "Error: Max retries reached") {
         await firebaseService.saveTranslationToFirebase(
-            inputText, languagePair.language1,languagePair.language2);
+            inputText,result, languagePair.language1,languagePair.language2);
       } else {
         Logger.log(
             "Translation failed or error occurred, not saving to Firestore.");
