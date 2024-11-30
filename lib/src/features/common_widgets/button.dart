@@ -6,7 +6,7 @@ class MyButton extends StatelessWidget {
   final VoidCallback onTab;
   final String text;
 
-  const MyButton({super.key, required this.onTab, required this.text});
+  const MyButton({super.key, required this.onTab, required this.text, void Function()? onTap, CircularProgressIndicator? child});
 
   @override
   Widget build(BuildContext context) {

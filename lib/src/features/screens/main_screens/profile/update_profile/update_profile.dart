@@ -33,6 +33,8 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
   bool _isGenderEditable = false;
   bool _isAgeEditable = false;
 
+  bool _isLoading = false; // Add this variable to track the loading state
+
   // Local variable to track user data
   Map<String, dynamic>? userData;
 
@@ -51,7 +53,6 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
       emailController.text = userData!['email'] ?? '';
       genderController.text = userData!['gender'] ?? '';
       ageController.text = userData!['age']?.toString() ?? '0';
-      // You can log the profile image URL to debug
       setState(() {}); // Rebuild the widget to display the data
     }
   }
@@ -72,7 +73,6 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Profile Image
-                  // Profile Image
                   Center(
                     child: GestureDetector(
                       onTap: _pickImage,
@@ -85,7 +85,6 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
                                     userData!['profile_image'].isNotEmpty
                                 ? NetworkImage(userData!['profile_image'])
                                 : null),
-                        // If both _image and userData['profile_image'] are null, set a placeholder image
                         child: _image == null &&
                                 (userData?['profile_image'] == null ||
                                     userData!['profile_image'].isEmpty)
@@ -94,78 +93,64 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 16),
 
-                  // Firstname
+                  // Text fields for updating profile
                   _buildTextField(
                     icon: Icons.person,
                     controller: firstnameController,
                     isEditable: _isFirstnameEditable,
                     onEditTap: () {
                       setState(() {
-                        _isFirstnameEditable =
-                            !_isFirstnameEditable; // Toggle editable state for firstname
+                        _isFirstnameEditable = !_isFirstnameEditable;
                       });
                     },
                     labelText: 'Unang Pangalan',
                   ),
                   const Divider(),
-
-                  // Lastname
                   _buildTextField(
                     icon: Icons.person,
                     controller: lastnameController,
                     isEditable: _isLastnameEditable,
                     onEditTap: () {
                       setState(() {
-                        _isLastnameEditable =
-                            !_isLastnameEditable; // Toggle editable state for lastname
+                        _isLastnameEditable = !_isLastnameEditable;
                       });
                     },
                     labelText: 'Apelyido',
                   ),
                   const Divider(),
-
-                  // Email
                   _buildTextField(
                     icon: Icons.email,
                     controller: emailController,
                     isEditable: _isEmailEditable,
                     onEditTap: () {
                       setState(() {
-                        _isEmailEditable =
-                            !_isEmailEditable; // Toggle editable state for email
+                        _isEmailEditable = !_isEmailEditable;
                       });
                     },
                     labelText: 'Email',
                   ),
                   const Divider(),
-
-                  // Gender
                   _buildTextField(
                     icon: Icons.person_outline,
                     controller: genderController,
                     isEditable: _isGenderEditable,
                     onEditTap: () {
                       setState(() {
-                        _isGenderEditable =
-                            !_isGenderEditable; // Toggle editable state for gender
+                        _isGenderEditable = !_isGenderEditable;
                       });
                     },
                     labelText: 'Kasarian',
                   ),
                   const Divider(),
-
-                  // Age
                   _buildTextField(
                     icon: Icons.cake,
                     controller: ageController,
                     isEditable: _isAgeEditable,
                     onEditTap: () {
                       setState(() {
-                        _isAgeEditable =
-                            !_isAgeEditable; // Toggle editable state for age
+                        _isAgeEditable = !_isAgeEditable;
                       });
                     },
                     labelText: 'Edad',
@@ -173,7 +158,7 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Update button
+                  // Update button with indicator
                   MyButton(
                     onTab: (_image != null ||
                             _isFirstnameEditable ||
@@ -183,7 +168,14 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
                             _isAgeEditable)
                         ? _updateProfile
                         : () {}, // No-op function for disabled state
-                    text: 'I-update ang Profile',
+                    text: _isLoading
+                        ? 'I-update ang Profile...'
+                        : 'I-update ang Profile', // Text update based on loading state
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          ) // Show a loading spinner if updating
+                        : null,
                   ),
                 ],
               ),
@@ -265,6 +257,9 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
 
   // Example function to update the profile
  void _updateProfile() async {
+      setState(() {
+      _isLoading = true; // Set loading state to true when the update begins
+    });
   String firstname = firstnameController.text;
   String lastname = lastnameController.text;
   int age = int.tryParse(ageController.text) ?? 0; // Ensure valid integer input
@@ -310,7 +305,9 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
     'Uliting muli ang pag-upload!', // Dialog content
     buttonText: 'OK', // Button text
   );
-  }
+  }setState(() {
+        _isLoading = false; // Set loading state to false when update finishes
+      });
 }
 
 }
