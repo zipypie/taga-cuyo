@@ -81,19 +81,22 @@ class _LessonScreenPageState extends State<LessonScreenPage> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+ @override
+Widget build(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+    child: SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          const SizedBox(height: 20),
           _lessonHeader(context),
           const SizedBox(height: 20),
           _lessonIntroduction(context),
           const SizedBox(height: 20),
-          Expanded(
-            // Wrapping the StreamBuilder in Expanded to prevent overflow
+          SizedBox(
+            // Use SizedBox with a fixed height to enable proper scrolling
+            height: MediaQuery.of(context).size.height*1.1,
             child: StreamBuilder<LessonState>(
               stream: _lessonBloc.stateStream,
               builder: (context, snapshot) {
@@ -110,15 +113,13 @@ class _LessonScreenPageState extends State<LessonScreenPage> {
                 } else if (snapshot.data is LessonLoaded) {
                   List<Map<String, dynamic>> lessons =
                       (snapshot.data as LessonLoaded).lessons;
-                  return SingleChildScrollView(
-                    child: Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: lessons
-                          .map((lesson) => _lessonListItem(
-                              context, lesson, _authService.getUserId()!))
-                          .toList(),
-                    ),
+                  return Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: lessons
+                        .map((lesson) => _lessonListItem(
+                            context, lesson, _authService.getUserId()!))
+                        .toList(),
                   );
                 } else if (snapshot.data is LessonError) {
                   return Center(
@@ -131,78 +132,82 @@ class _LessonScreenPageState extends State<LessonScreenPage> {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 
   // Header Section
   Widget _lessonHeader(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    return Container(
-      width: double.infinity,
-      height: width * 0.3,
-      decoration: BoxDecoration(
-        color: AppColors.primaryBackground,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Shadow color
-            spreadRadius: 2, // Spread radius of the shadow
-            blurRadius: 5, // Blur radius of the shadow
-            offset: const Offset(0, 2), // Position of the shadow
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(25, 15, 0, 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start, // Align items to start
-          crossAxisAlignment: CrossAxisAlignment.start, // Align to the top
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    right: 40), // Add right padding for space
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start, // Align text to the left
-                  children: [
-                    Text(
-                      'Maligayang pagdating sa Taga-Cuyo',
-                      style: TextStyle(
-                        fontFamily: AppFonts.fcb,
-                        color: Color.fromARGB(255, 60, 63, 65),
-                        fontSize: height* 0.024,
-                      ),
-                      textAlign: TextAlign.left, // Align text to the left
-                    ),
-                    const SizedBox(height: 5),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text(
-                        'Aralin $lessonProgress / $maxLength',
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Container(
+        width: double.infinity,
+        height: width * 0.3,
+        decoration: BoxDecoration(
+          color: AppColors.primaryBackground,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2), // Shadow color
+              spreadRadius: 2, // Spread radius of the shadow
+              blurRadius: 5, // Blur radius of the shadow
+              offset: const Offset(0, 2), // Position of the shadow
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(25, 15, 0, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start, // Align items to start
+            crossAxisAlignment: CrossAxisAlignment.start, // Align to the top
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      right: 40), // Add right padding for space
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start, // Align text to the left
+                    children: [
+                      Text(
+                        'Maligayang pagdating sa Taga-Cuyo',
                         style: TextStyle(
-                          fontFamily: AppFonts
-                              .fcr, // Ensure this font is defined in your pubspec.yaml
-                          fontSize: height* 0.021, // You can adjust the font size as needed
-                          color: Color.fromARGB(
-                              255, 73, 109, 126), // Use a color if needed
+                          fontFamily: AppFonts.fcb,
+                          color: Color.fromARGB(255, 60, 63, 65),
+                          fontSize: height* 0.024,
                         ),
                         textAlign: TextAlign.left, // Align text to the left
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 5),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Text(
+                          'Aralin $lessonProgress / $maxLength',
+                          style: TextStyle(
+                            fontFamily: AppFonts
+                                .fcr, // Ensure this font is defined in your pubspec.yaml
+                            fontSize: height* 0.021, // You can adjust the font size as needed
+                            color: Color.fromARGB(
+                                255, 73, 109, 126), // Use a color if needed
+                          ),
+                          textAlign: TextAlign.left, // Align text to the left
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              child: CustomImage(
-                src: 'assets/images/monkey.png',
-                width: height * 0.11, // Fixed width for the image
-                height: height * 0.11,
+              SizedBox(
+                child: CustomImage(
+                  src: 'assets/images/monkey.png',
+                  width: height * 0.11, // Fixed width for the image
+                  height: height * 0.11,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

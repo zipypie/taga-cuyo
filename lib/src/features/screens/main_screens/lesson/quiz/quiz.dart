@@ -404,8 +404,8 @@ class LessonQuizScreenState extends State<LessonQuizScreen> {
                           child: Text(
                               '${_currentWordIndex + 1} / ${_words.length}', // Show finished and max length
                               style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                fontFamily: AppFonts.fcb,
                                 color:
                                     Colors.black, // Customize color as needed
                               ))

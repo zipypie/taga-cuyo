@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart'; // Import the intl package
 import 'package:taga_cuyo/src/features/common_widgets/loading_animation/profile_loading.dart';
 import 'package:taga_cuyo/src/features/constants/colors.dart';
+import 'package:taga_cuyo/src/features/constants/fontstyles.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/profile/profile_bloc.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/profile/profile_event.dart';
 import 'package:taga_cuyo/src/features/screens/main_screens/profile/profile_options.dart';
@@ -139,7 +140,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(
                     name,
                     style: const TextStyle(
-                      fontSize: 21,
+                      fontFamily: AppFonts.fcb,
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: AppColors.titleColor,
                     ),
@@ -189,7 +191,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const Text(
             'Iyong Pag-unlad',
             style: TextStyle(
-              fontSize: 20,
+              fontFamily: AppFonts.fcb,
+              fontSize: 23,
               fontWeight: FontWeight.bold,
               color: AppColors.titleColor,
             ),
@@ -297,7 +300,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 value,
                 style: TextStyle(
-                  fontSize: isSmallScreen ? 16 : 18,
+                  fontFamily: AppFonts.fcb,
+                  fontSize: isSmallScreen ? 19 : 23,
                   fontWeight: FontWeight.bold,
                 ),
               ),

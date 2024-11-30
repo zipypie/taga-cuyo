@@ -104,7 +104,7 @@ class _CategoryScreenState extends State<CategoryScreen>
       builder: (context, snapshot) {
         int completedCount = snapshot.data ?? 0; // Get the completed count
         return Container(
-          height: screenHeight * 0.276,
+          height: screenHeight * 0.2652,
           decoration: const BoxDecoration(
             border: Border(
               bottom: BorderSide(
@@ -228,7 +228,7 @@ class SubcategoryCard extends StatelessWidget {
       },
       child: SizedBox(
         width: contentWidth * 0.333,
-        height: contentWidth * 0.453, // 33% of the screen width
+        height: contentWidth * 0.41, // 33% of the screen width
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -263,7 +263,7 @@ class SubcategoryCard extends StatelessWidget {
                 capitalizeFirstLetter(subcategory.name),
                 style: TextStyle(
                   fontFamily: AppFonts.fcr,
-                  fontSize: contentWidth * 0.049,
+                  fontSize: contentWidth * 0.054,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,

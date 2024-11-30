@@ -194,7 +194,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               );
                             },
                             child: Text(
-                              'Nakalimutan ang password!',
+                              'Nakalimutan ang password?',
                               style: TextStyle(
                                 letterSpacing: 1,
                                 fontFamily: AppFonts.kanitLight,

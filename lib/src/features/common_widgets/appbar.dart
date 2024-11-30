@@ -16,7 +16,7 @@ class AppBarScreen extends StatelessWidget implements PreferredSizeWidget {
         padding: const EdgeInsets.only(left: 20), // Padding for the title
         child: Text(
           title,
-          style: const TextStyle(color: AppColors.titleColor,fontFamily: AppFonts.lilitaOne,fontSize: 24),
+          style: const TextStyle(color: AppColors.titleColor,fontFamily: AppFonts.fcb,fontSize: 24),
         ),
       ),
       actions: <Widget>[

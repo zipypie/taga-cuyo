@@ -49,7 +49,6 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
     fetchCategorySubcategoryData();
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (dataList.isEmpty) {
@@ -123,13 +122,29 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
                       text: 'Sunod',
                     ),
                   ),
-                LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                      AppColors.accentColor),
+                Row(
+                  children: [
+                    Expanded(
+                      child: LinearProgressIndicator(
+                        value: progress,
+                        backgroundColor: Colors.grey[300],
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                            AppColors.accentColor),
+                      ),
+                    ),
+                    const SizedBox(
+                        width:
+                            10), // Add some space between the progress bar and the number
+                    Text(
+                      '${_currentWordIndex + 1}/${dataList.length}',
+                      style: const TextStyle(
+                        fontFamily: AppFonts.fcb,
+                        fontSize: 20,
+                        color: Colors.black, // Change the color as needed
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 10), // Add some space
               ],
             ),
           ),
@@ -318,7 +333,7 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
             ),
             const SizedBox(height: 5),
             Text(
-              subcategoryTitle,
+              capitalizeFirstLetter(subcategoryTitle),
               style: const TextStyle(
                 fontFamily: AppFonts.fcr,
                 fontSize: 26,
@@ -376,7 +391,7 @@ class _CategoryQuizScreenState extends State<CategoryQuizScreen> {
         width: MediaQuery.of(context).size.width * 2.3 / 3,
         child: Center(
           child: Text(
-            word,
+            capitalizeFirstLetter(word),
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontFamily: AppFonts.fcr,

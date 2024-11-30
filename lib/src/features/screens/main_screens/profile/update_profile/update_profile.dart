@@ -108,7 +108,7 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
                             !_isFirstnameEditable; // Toggle editable state for firstname
                       });
                     },
-                    labelText: 'First Name',
+                    labelText: 'Unang Pangalan',
                   ),
                   const Divider(),
 
@@ -123,7 +123,7 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
                             !_isLastnameEditable; // Toggle editable state for lastname
                       });
                     },
-                    labelText: 'Last Name',
+                    labelText: 'Apelyido',
                   ),
                   const Divider(),
 
@@ -153,7 +153,7 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
                             !_isGenderEditable; // Toggle editable state for gender
                       });
                     },
-                    labelText: 'Gender',
+                    labelText: 'Kasarian',
                   ),
                   const Divider(),
 
@@ -168,7 +168,7 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
                             !_isAgeEditable; // Toggle editable state for age
                       });
                     },
-                    labelText: 'Age',
+                    labelText: 'Edad',
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 24),
@@ -183,7 +183,7 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
                             _isAgeEditable)
                         ? _updateProfile
                         : () {}, // No-op function for disabled state
-                    text: 'Update Profile',
+                    text: 'I-update ang Profile',
                   ),
                 ],
               ),
@@ -224,8 +224,8 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Choose an option'),
-          content: const Text('Select a source to upload your profile image.'),
+          title: const Text('Pumili ng opsyon'),
+          content: const Text('Piliin ang pinagmulan para mag-upload ng iyong larawan sa profile.'),
           actions: [
             TextButton(
               child: const Text('Camera'),
@@ -244,7 +244,7 @@ class _UpdateProfileState extends State<UpdateProfileScreen> {
               },
             ),
             TextButton(
-              child: const Text('Cancel'),
+              child: const Text('Kanselahin'),
               onPressed: () {
                 Navigator.of(context)
                     .pop(); // Close dialog without returning an image

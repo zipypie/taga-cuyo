@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Create a PageController to control the PageView
   final PageController _pageController = PageController(
-    initialPage: 0, 
+    initialPage: 0,
     viewportFraction: 1.0, // Keeps the pages fully visible for smoother transitions
   );
 
@@ -59,10 +59,11 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _selectedIndex = index;
       });
-      // Animate the page change with a different curve (fastOutSlowIn)
-      _pageController.animateToPage(index, 
-        duration: const Duration(milliseconds: 450), // Adjust for smoothness
-        curve: Curves.fastOutSlowIn, // Use fastOutSlowIn for a more natural feel
+      // Animate the page change with a smooth curve
+      _pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 300), // Smooth animation duration
+        curve: Curves.easeInOut, // Smooth curve for natural transitions
       );
     }
 
@@ -75,7 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
             _selectedIndex = index;
           });
         },
-        physics: const NeverScrollableScrollPhysics(), // Disable swipe gestures
+        // Allow swipe gestures for the PageView
+        physics: const BouncingScrollPhysics(), // Add bounce effect for a better user experience
         children: pagesWithProfile,
       ),
       bottomNavigationBar: CustomBottomNavigationBar(

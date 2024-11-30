@@ -36,9 +36,22 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
     // Add listeners to update character count dynamically
     _controller.addListener(() {
       setState(() {
-        _inputCharCount = _controller.text.length;
+        // Get the substring before the first sentence-ending punctuation
+        _inputCharCount = _getCharCountBeforePunctuation(_controller.text);
       });
     });
+  }
+
+  int _getCharCountBeforePunctuation(String text) {
+    // Find the first occurrence of punctuation: period, question mark, or exclamation mark
+    int firstPunctuationIndex = text.indexOf(RegExp(r'[.!?]'));
+
+    // If punctuation is found, count characters before it, else count all characters
+    if (firstPunctuationIndex != -1) {
+      return firstPunctuationIndex;
+    } else {
+      return text.length;
+    }
   }
 
   @override
@@ -48,52 +61,54 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
     super.dispose();
   }
 
- Future<void> _translateText() async {
-  setState(() {
-    _isLoading = true; // Start loading when translation starts
-  });
-
-  String inputText = _controller.text.trim();
-
-  // Check if the input text ends with a period, question mark, or exclamation mark
-  if (!inputText.endsWith(".") &&
-      !inputText.endsWith("?") &&
-      !inputText.endsWith("!")) {
-    // If not, add a space and then a period
-    inputText += " .";
-  } else {
-
-    inputText += " .";
-  }
-
-  try {
-    final result = await service.translate(
-      inputText,
-      sourceLang: languagePair.language1,
-      targetLang: languagePair.language2,
-    );
-    
+  Future<void> _translateText() async {
     setState(() {
-      _translation = result;
-      _outputCharCount = _translation.length;
-      _outputController.text = _translation; // Update output controller text
-      _isLoading = false; // Stop loading after translation is complete
+      _isLoading = true; // Start loading when translation starts
     });
 
-    // Save only the sentence and source language to Firebase
-    if (result != "Translation failed" && result != "Error: Max retries reached") {
-      await firebaseService.saveTranslationToFirebase(inputText, languagePair.language1);
+    String inputText = _controller.text.trim();
+
+    // Check if the input text ends with a period, question mark, or exclamation mark
+    if (!inputText.endsWith(".") &&
+        !inputText.endsWith("?") &&
+        !inputText.endsWith("!")) {
+      // If not, add a space and then a period
+      inputText += " .";
     } else {
-      Logger.log("Translation failed or error occurred, not saving to Firestore.");
+      inputText += " .";
     }
-  } catch (error) {
-    setState(() {
-      _isLoading = false; // Stop loading if there is an error
-    });
-    Logger.log("Error during translation: $error");
-  }
-}
 
+    try {
+      final result = await service.translate(
+        inputText,
+        sourceLang: languagePair.language1,
+        targetLang: languagePair.language2,
+      );
+
+      setState(() {
+        _translation = result;
+        // Count characters before the first sentence-ending punctuation
+        _outputCharCount = _getCharCountBeforePunctuation(_translation);
+        _outputController.text = _translation; // Update output controller text
+        _isLoading = false; // Stop loading after translation is complete
+      });
+
+      // Save only the sentence and source language to Firebase
+      if (result != "Translation failed" &&
+          result != "Error: Max retries reached") {
+        await firebaseService.saveTranslationToFirebase(
+            inputText, languagePair.language1);
+      } else {
+        Logger.log(
+            "Translation failed or error occurred, not saving to Firestore.");
+      }
+    } catch (error) {
+      setState(() {
+        _isLoading = false; // Stop loading if there is an error
+      });
+      Logger.log("Error during translation: $error");
+    }
+  }
 
   void _swapLanguages() {
     setState(() {
@@ -117,7 +132,7 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(
           horizontal: isLargeScreen ? 40 : 20,
-          vertical: isLargeScreen ? 40 : 25,
+          vertical: isLargeScreen ? 40 : 20,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -126,15 +141,15 @@ class _TranslatorScreenState extends State<TranslatorScreen> {
               languagePair: languagePair,
               onLanguageSwap: _swapLanguages, // Only swap languages
             ),
-            SizedBox(height: screenHeight * 0.02),
+            SizedBox(height: screenHeight * 0.015),
             _buildInputContainer(),
-            SizedBox(height: screenHeight * 0.02),
+            SizedBox(height: screenHeight * 0.015),
             _buildOutputContainer(),
-            SizedBox(height: screenHeight * 0.018),
+            SizedBox(height: screenHeight * 0.015),
             _isLoading
                 ? CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(
-                        AppColors.primaryBackground),
+                        AppColors.titleColor),
                   ) // Show the loading indicator while translating
                 : MyButton(
                     onTab: _translateText, // Trigger translation here
