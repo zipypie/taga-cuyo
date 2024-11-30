@@ -4,11 +4,12 @@ import 'package:taga_cuyo/src/exceptions/logger.dart';
 class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> saveTranslationToFirebase(String sentence, String sourceLang) async {
+  Future<void> saveTranslationToFirebase(String sentence, String sourceLang, String targetLang) async {
     try {
       await _firestore.collection('translations').add({
         'sentence': sentence,
         'source_language': sourceLang,
+        'target_language' : targetLang,
         'timestamp': FieldValue.serverTimestamp(),
       });
       Logger.log("Translation saved successfully to Firestore!");
