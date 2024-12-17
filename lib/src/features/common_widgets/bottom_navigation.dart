@@ -32,15 +32,15 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.translate),
-          label: 'Tagasalin',
+          label: 'Translator',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.play_lesson),
-          label: 'Aralin',
+          label: 'Lesson',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.category),
-          label: 'Kategorya',
+          label: 'Category',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.person),
@@ -48,7 +48,8 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         ),
       ],
       currentIndex: widget.selectedIndex, // Selected tab index
-      selectedItemColor: AppColors.titleColor, // Color of selected icon and label
+      selectedItemColor:
+          AppColors.titleColor, // Color of selected icon and label
       unselectedItemColor: const Color.fromARGB(
           255, 167, 149, 73), // Color of unselected icons and labels
       selectedLabelStyle: const TextStyle(

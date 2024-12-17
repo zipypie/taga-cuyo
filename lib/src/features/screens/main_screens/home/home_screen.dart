@@ -28,7 +28,8 @@ class _HomeScreenState extends State<HomeScreen> {
   // Create a PageController to control the PageView
   final PageController _pageController = PageController(
     initialPage: 0,
-    viewportFraction: 1.0, // Keeps the pages fully visible for smoother transitions
+    viewportFraction:
+        1.0, // Keeps the pages fully visible for smoother transitions
   );
 
   // List of pages/icons that correspond to each tab in the bottom navigation bar
@@ -42,9 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
   // List of titles corresponding to each page
   static final List<String> _titles = <String>[
     'Home',
-    'Tagasalin',
-    'Aralin',
-    'Kategorya',
+    'Translator',
+    'Lesson',
+    'Category',
     'Profile',
   ];
 
@@ -62,13 +63,16 @@ class _HomeScreenState extends State<HomeScreen> {
       // Animate the page change with a smooth curve
       _pageController.animateToPage(
         index,
-        duration: const Duration(milliseconds: 300), // Smooth animation duration
+        duration:
+            const Duration(milliseconds: 300), // Smooth animation duration
         curve: Curves.easeInOut, // Smooth curve for natural transitions
       );
     }
 
     return Scaffold(
-      appBar: AppBarScreen(title: _titles[_selectedIndex]), // Pass the title based on the selected index
+      appBar: AppBarScreen(
+          title: _titles[
+              _selectedIndex]), // Pass the title based on the selected index
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -77,7 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
         // Allow swipe gestures for the PageView
-        physics: const BouncingScrollPhysics(), // Add bounce effect for a better user experience
+        physics:
+            const BouncingScrollPhysics(), // Add bounce effect for a better user experience
         children: pagesWithProfile,
       ),
       bottomNavigationBar: CustomBottomNavigationBar(

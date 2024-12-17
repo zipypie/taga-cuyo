@@ -96,7 +96,7 @@ class _CategoryScreenState extends State<CategoryScreen>
   }
 
   Widget _categoryCard(Category category) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    final screenHeight = MediaQuery.of(context).size.height - 162;
 
     return FutureBuilder<int>(
       future: _categoryService.getCompletedSubcategoriesCount(
@@ -104,7 +104,7 @@ class _CategoryScreenState extends State<CategoryScreen>
       builder: (context, snapshot) {
         int completedCount = snapshot.data ?? 0; // Get the completed count
         return Container(
-          height: screenHeight * 0.2652,
+          height: screenHeight / 3,
           decoration: const BoxDecoration(
             border: Border(
               bottom: BorderSide(
@@ -125,7 +125,7 @@ class _CategoryScreenState extends State<CategoryScreen>
                       capitalizeFirstLetter(category.id),
                       style: TextStyle(
                         fontFamily: AppFonts.fcb,
-                        fontSize: screenHeight * 0.025, // Responsive font size
+                        fontSize: 21, // Responsive font size
                       ),
                     ),
                     Text(
@@ -263,7 +263,7 @@ class SubcategoryCard extends StatelessWidget {
                 capitalizeFirstLetter(subcategory.name),
                 style: TextStyle(
                   fontFamily: AppFonts.fcr,
-                  fontSize: contentWidth * 0.054,
+                  fontSize: 19,
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,

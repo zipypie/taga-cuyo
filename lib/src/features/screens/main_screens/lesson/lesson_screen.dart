@@ -81,60 +81,60 @@ class _LessonScreenPageState extends State<LessonScreenPage> {
     super.dispose();
   }
 
- @override
-Widget build(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-    child: SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          const SizedBox(height: 20),
-          _lessonHeader(context),
-          const SizedBox(height: 20),
-          _lessonIntroduction(context),
-          const SizedBox(height: 20),
-          SizedBox(
-            // Use SizedBox with a fixed height to enable proper scrolling
-            height: MediaQuery.of(context).size.height*1.1,
-            child: StreamBuilder<LessonState>(
-              stream: _lessonBloc.stateStream,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return lessonShimmerLoading(); // Show shimmer loading when waiting
-                }
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            const SizedBox(height: 20),
+            _lessonHeader(context),
+            const SizedBox(height: 20),
+            _lessonIntroduction(context),
+            const SizedBox(height: 20),
+            SizedBox(
+              // Use SizedBox with a fixed height to enable proper scrolling
+              height: MediaQuery.of(context).size.height * 1.1,
+              child: StreamBuilder<LessonState>(
+                stream: _lessonBloc.stateStream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return lessonShimmerLoading(); // Show shimmer loading when waiting
+                  }
 
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
 
-                if (snapshot.data is LessonLoading) {
-                  return const Center(child: Text('Loading lessons...'));
-                } else if (snapshot.data is LessonLoaded) {
-                  List<Map<String, dynamic>> lessons =
-                      (snapshot.data as LessonLoaded).lessons;
-                  return Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: lessons
-                        .map((lesson) => _lessonListItem(
-                            context, lesson, _authService.getUserId()!))
-                        .toList(),
-                  );
-                } else if (snapshot.data is LessonError) {
-                  return Center(
-                      child: Text((snapshot.data as LessonError).message));
-                }
+                  if (snapshot.data is LessonLoading) {
+                    return const Center(child: Text('Loading lessons...'));
+                  } else if (snapshot.data is LessonLoaded) {
+                    List<Map<String, dynamic>> lessons =
+                        (snapshot.data as LessonLoaded).lessons;
+                    return Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: lessons
+                          .map((lesson) => _lessonListItem(
+                              context, lesson, _authService.getUserId()!))
+                          .toList(),
+                    );
+                  } else if (snapshot.data is LessonError) {
+                    return Center(
+                        child: Text((snapshot.data as LessonError).message));
+                  }
 
-                return const Center(child: Text('No lessons available.'));
-              },
+                  return const Center(child: Text('No lessons available.'));
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   // Header Section
   Widget _lessonHeader(BuildContext context) {
@@ -143,8 +143,7 @@ Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: Container(
-        width: double.infinity,
-        height: width * 0.3,
+        width: width,
         decoration: BoxDecoration(
           color: AppColors.primaryBackground,
           borderRadius: BorderRadius.circular(15),
@@ -176,7 +175,7 @@ Widget build(BuildContext context) {
                         style: TextStyle(
                           fontFamily: AppFonts.fcb,
                           color: Color.fromARGB(255, 60, 63, 65),
-                          fontSize: height* 0.024,
+                          fontSize: 18,
                         ),
                         textAlign: TextAlign.left, // Align text to the left
                       ),
@@ -188,7 +187,8 @@ Widget build(BuildContext context) {
                           style: TextStyle(
                             fontFamily: AppFonts
                                 .fcr, // Ensure this font is defined in your pubspec.yaml
-                            fontSize: height* 0.021, // You can adjust the font size as needed
+                            fontSize: height *
+                                0.021, // You can adjust the font size as needed
                             color: Color.fromARGB(
                                 255, 73, 109, 126), // Use a color if needed
                           ),
@@ -277,14 +277,15 @@ Widget build(BuildContext context) {
                         color: AppColors.primaryBackground,
                         borderRadius: BorderRadius.circular(25),
                         border: Border.all(
-                          color: AppColors.correct, // Change border color to green
-                          width: width*0.014,
+                          color:
+                              AppColors.correct, // Change border color to green
+                          width: width * 0.014,
                         ),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.15),
                             spreadRadius: 2,
-                            blurRadius: width*0.014,
+                            blurRadius: width * 0.014,
                             offset: const Offset(0, 2),
                           ),
                         ],
@@ -299,8 +300,9 @@ Widget build(BuildContext context) {
                         color: AppColors.primaryBackground,
                         borderRadius: BorderRadius.circular(25),
                         border: Border.all(
-                          color: AppColors.accentColor, // Default transparent border
-                          width:width*0.014,
+                          color: AppColors
+                              .accentColor, // Default transparent border
+                          width: width * 0.014,
                         ),
                         boxShadow: [
                           BoxShadow(
@@ -326,7 +328,7 @@ Widget build(BuildContext context) {
                 capitalizeFirstLetter(
                     lesson['lesson_name']), // Display lesson name safely
                 style: TextStyle(
-                  fontSize: width * 0.05,
+                  fontSize: 19,
                   fontFamily: AppFonts.fcr,
                   color: Color.fromARGB(255, 0, 0, 0),
                 ),
@@ -401,7 +403,7 @@ Widget build(BuildContext context) {
                 );
               },
               child: Container(
-                width: width * 0.72,
+                width: width - 100,
                 height: width * 0.22,
                 decoration: BoxDecoration(
                   color: AppColors.primaryBackground,

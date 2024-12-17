@@ -26,5 +26,7 @@
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:598478516019:ios:a17fc5a2a1bea157305846</string>
+	<key>DATABASE_URL</key>
+	<string>https://tagalog-cuyonon-mobile-app-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>
